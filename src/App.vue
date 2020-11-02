@@ -1,14 +1,16 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <CirclePack width=500 height=500 svg_height=700></CirclePack>
   </div>
 </template>
 
 <script>
+import CirclePack from "./components/CirclePack";
 export default {
-  name: 'App'
+  name: 'App',
+  components: {CirclePack}
 }
+
 </script>
 
 <style>
