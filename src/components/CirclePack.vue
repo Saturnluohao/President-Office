@@ -10,10 +10,14 @@ import axios from 'axios';
 
 export default {
   name: "CirclePack",
-  props:{
+  props: {
+    first_focus: String,
     width: Number,
     height: Number,
-    svg_height: Number
+    svg_height: Number,
+    display_theme: String,
+    root_font_size: Number,
+    children_font_size: Number
   },
   data() {
     return {
@@ -25,6 +29,7 @@ export default {
   methods: {
     pack: function (data) {
       let self = this;
+
       function construct_circlepack(hierarchy) {
         if (hierarchy.height == 0) {
           return;
@@ -50,6 +55,7 @@ export default {
         }
         return hierarchy;
       }
+
       return construct_circlepack(d3.hierarchy(data));
     },
 
@@ -121,13 +127,14 @@ export default {
         .attr("fill", "red")
         .attr("r", radius)
         .call(d3.drag().on("start", dragStarted).on("drag", dragged))
-        // .on("end", dragEnded);
+      // .on("end", dragEnded);
       this.relations.set(new_circle, new_line);
     },
 
     //绘制圆堆积图
     drawCirclePack: function (svg, data) {
       let self = this;
+
       //聚焦到点击的园
       function zoomTo(v) {
         const k = self.width / v[2];
@@ -157,18 +164,14 @@ export default {
             return (t) => zoomTo(i(t));
           });
         label
-          .filter(function (d) {
-            return d.parent === focus || this.style.display === "inline";
-          })
           .transition(transition)
           .style("fill-opacity", (d) =>
             d.parent === focus || d === focus ? 1 : 0
           )
           .style("font-size", (d) => (d === focus ? "25px" : "10px"))
-          .on("start", function (d) {
-            if (d.parent === focus) this.style.display = "inline";
-          });
+          .style('display', d => d.parent === focus || d === focus ? 'inline' : 'none')
       }
+
       //整个svg的平移缩放
       function zoomed(event) {
         circle_pack_group.attr("transform", event.transform);
@@ -189,12 +192,13 @@ export default {
         .attr("viewBox", `-${this.width / 2} -${this.height / 2} ${this.width} ${this.height}`)
         .style("display", "block")
         .style("margin", "0 -14px")
-        .style("background", color(0))
         .style("cursor", "pointer")
         .attr("height", this.svg_height)
         .on("click", (event) => {
           console.log("Clicked: ", event.x, event.y);
-          zoom(root);
+          // focus = root;
+          // focus_selection = circles.filter(d => d.depth === 0);
+          // zoom(event);
         });
 
       this.circle_group = circle_pack_group
@@ -210,20 +214,12 @@ export default {
         .join("circle")
         .attr("fill", (d) => (d.children ? color(d.depth) : "white"))
         .attr("pointer-events", (d) => (!d.children ? "none" : null))
-        .attr("stroke", function (d) {
-          return d.depth === 0 ? "white" : "none";
-        })
-        .style("display", (d) =>
-          d.depth <= focus.depth + 1
-            ? "inline"
-            : "none"
-        )
-        .attr("stroke-width", (d) => (d.depth === 0 ? 3 : 1))
         .on("click", function (event, data) {
           if (data !== focus) {
             focus = data;
             circles.style("display", (d) =>
-              d.depth <= focus.depth ||
+              d.depth < focus.depth ||
+              d.depth === focus.depth ||
               (d.depth === focus.depth + 1 && d.parent === focus)
                 ? "inline"
                 : "none"
@@ -240,10 +236,9 @@ export default {
             }
             focus_selection = self;
           }
-          return focus !== data && (zoom(), event.stopPropagation());
+          return (zoom(event), event.stopPropagation());
         });
 
-      focus_selection = circles.filter((d) => d.depth === 0);
 
       svg.call(d3.zoom().scaleExtent([0.5, 10]).on("zoom", zoomed));
 
@@ -256,20 +251,60 @@ export default {
         .selectAll("text")
         .data(root.descendants())
         .join("text")
-        .style("fill-opacity", (d) => (d.parent === root ? 1 : 0))
-        .style("display", (d) => (d.parent === root ? "inline" : "none"))
         .text((d) => d.data.name);
 
-      //首次聚焦到最外层圆
-      zoomTo([root.x, root.y, root.r * 2]);
+      //首次聚焦
+      switch (this.display_theme) {
+        case "0":
+          zoomTo([root.x, root.y, root.r * 2.2]);
+
+          label.filter(d => d === focus).style('font-size', '25px');
+          label.style("display", d => d.parent === root || d === root ? 'inline' : 'none');
+          label.style("font-size", d => d.parent === root ? this.children_font_size : this.root_font_size);
+          break;
+        case "1":
+          zoomTo([root.x, root.y, root.r * 2.2]);
+          focus = root;
+          focus_selection = circles.filter((d) => d.depth === 0);
+          focus_selection.attr("stroke-width", 3);
+          focus_selection.attr("stroke", "#ffffff");
+          circles.style("display", (d) =>
+            d.depth <= focus.depth + 1
+              ? "inline"
+              : "none"
+          );
+          label.filter(d => d === focus).style('font-size', '25px');
+          label.style("display", (d) => (d.parent === root || d === root ? 'inline' : 'none'))
+          break;
+        case "2":
+          let should_focus = circles.filter(d => d.data.name === this.first_focus);
+          let should_focus_data = should_focus.datum();
+          zoomTo([should_focus_data.x, should_focus_data.y, should_focus_data.r * 2.2]);
+          focus = should_focus_data;
+          focus_selection = should_focus;
+
+          circles.style("display", (d) =>
+            d.depth <= focus.depth ||
+            (d.depth === focus.depth + 1 && d.parent === focus)
+              ? "inline"
+              : "none"
+          );
+          //高亮选中的圆
+          should_focus.attr("stroke-width", 3);
+          should_focus.attr("stroke", "#ffffff");
+
+          zoom({})
+          break;
+      }
     }
   },
   mounted() {
-    let data_url = 'http://localhost:8081/flare-2.json';
+    let data_url = '/circle_pack_data';
     let svg = d3.select('#circle-pack-svg');
+    Object.assign(this.$props, this.$route.params);
     axios.get(data_url)
-         .then(res => this.drawCirclePack(svg, res.data))
-         .catch(e => console.log(e));
+      .then(res => this.drawCirclePack(svg, res.data))
+      .catch(e => console.log(e));
   }
 };
 </script>
