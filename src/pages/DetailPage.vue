@@ -2,42 +2,27 @@
   <div id="detail-page">
     <Row>
       <i-col span="2">
-        <div id="tool-side-bar">
-          <ul id="tool-list">
-            <li>
-              <Icon type="ios-home" size="32"></Icon>
-            </li>
-            <li>
-              <Icon type="ios-menu" size="32"></Icon>
-            </li>
-            <li>
-              <Icon type="ios-contract" size="32"></Icon>
-            </li>
-            <li>
-              <Icon type="ios-search" size="32"></Icon>
-            </li>
-          </ul>
-        </div>
+        <ToolSideBar></ToolSideBar>
       </i-col>
       <i-col span="11">
         <div id="circle-pack">
-          <CirclePack width=400 height=400 svg_height=600 display_theme=1></CirclePack>
+          <CirclePack width=400 height=400 svg_height=600 display_theme=1 :setFocus="setFocus"></CirclePack>
         </div>
       </i-col>
       <i-col span="11">
         <div id="detail">
           <div id="intro-card">
-            <p id="intro-title">校园业务</p>
+            <p id="intro-title">{{currentFocus}}</p>
             <p id="intro-desc">
               描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述
             </p>
           </div>
           <div id="choices">
-            <button>业务</button>
-            <button>角色</button>
+            <button :style="{color: btn1_color}" @click="setState('business')">业务</button>
+            <button :style="{color: btn2_color}" @click="setState('role')">角色</button>
           </div>
-          <div id="roles">
-            <Collapse v-model="value1">
+          <div id="roles" v-if="currentState === 'role'">
+            <Collapse>
               <Panel name="1">
                 史蒂夫·乔布斯
                 <p slot="content">史蒂夫·乔布斯（Steve Jobs），1955年2月24日生于美国加利福尼亚州旧金山，美国发明家、企业家、美国苹果公司联合创办人。</p>
@@ -52,8 +37,13 @@
               </Panel>
             </Collapse>
           </div>
-          <div id="business">
-
+          <div id="business" v-else>
+            <ul id="detailpage-decision-list">
+              <li v-for="(item,i) in menuItems">
+                {{item}}
+                <Icon type="ios-arrow-forward"/>
+              </li>
+            </ul>
           </div>
         </div>
       </i-col>
@@ -62,43 +52,72 @@
 </template>
 
 <script>
-import CirclePack from "./CirclePack";
+import CirclePack from "../components/CirclePack";
+import ToolSideBar from "../components/ToolSideBar";
 
 export default {
   name: "DetailPage",
-  components: {CirclePack},
-  methods: {}
+  data(){
+    return {
+      currentState: "role",
+      currentFocus: 'flare'
+    }
+  },
+  components: {ToolSideBar, CirclePack},
+  methods: {
+    setState(state){
+      this.currentState = state;
+    },
+    setFocus(focus){
+      this.currentFocus = focus;
+    }
+  },
+  computed: {
+    btn1_color(){
+      return this.currentState === "business" ? "white" : "#66646F";
+    },
+    btn2_color(){
+      return this.currentState === "role" ? "white" : "#66646F";
+    },
+    menuItems(){
+      let menu = [], queue = [];
+      if (this.$store.state.circle_pack_data){
+        queue.push(this.$store.state.circle_pack_data);
+        while (queue.length !== 0){
+          let p = queue.shift();
+          if (p.name === this.currentFocus){
+            for(let i = 0; i < p.children.length; i++){
+              menu.push(p.children[i]);
+            }
+            break;
+          }
+          else if (p.children){
+            for(let i = 0; i < p.children.length; i++){
+              queue.push(p.children[i]);
+            }
+          }
+        }
+      }
+      return menu.slice(0, 5).map(d => d.name);
+    }
+  },
+  beforeCreate(){
+    // 添加背景色
+    document.querySelector('body').setAttribute('style', 'background-color:black')
+  },
+  beforeDestroy(){
+    document.querySelector('body').setAttribute('style', '')
+  },
 }
 </script>
 
 <style scoped>
 #detail-page {
   height: 100%;
+  background: black;
 }
 #detail-page .ivu-row, .ivu-col{
   height: 100%;
-}
-#tool-list i {
-  color: white;
-}
-
-#tool-side-bar {
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-#tool-list {
-  list-style: none;
-  margin-left: 30%;
-}
-
-#tool-list li {
-  margin: 15px 0;
-}
-
-#tool-list li:nth-child(2) {
-  margin-bottom: 70px;
 }
 
 #circle-pack {
@@ -147,8 +166,8 @@ export default {
 #choices button{
   border: none;
   background: transparent;
-  color: white;
   display: inline-block;
+  outline: none;
 }
 
 #roles {
@@ -176,5 +195,25 @@ export default {
   background: rgb(41, 41, 47);
   color: white;
   border: none;
+}
+
+#detailpage-decision-list {
+  list-style: none;
+  width: 80%;
+  margin-left: 10%;
+}
+
+#detailpage-decision-list li {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 15px;
+  margin: 10px 0;
+  text-align: left;
+  color: white;
+  background: rgb(55, 55, 62)
+}
+
+#detailpage-decision-list i {
+  float: right;
 }
 </style>

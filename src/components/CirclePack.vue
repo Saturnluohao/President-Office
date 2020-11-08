@@ -17,7 +17,8 @@ export default {
     svg_height: Number,
     display_theme: String,
     root_font_size: Number,
-    children_font_size: Number
+    children_font_size: Number,
+    setFocus: Function
   },
   data() {
     return {
@@ -236,6 +237,9 @@ export default {
             }
             focus_selection = self;
           }
+          if (self.setFocus){
+            self.setFocus(data.data.name);
+          }
           return (zoom(event), event.stopPropagation());
         });
 
@@ -299,11 +303,14 @@ export default {
     }
   },
   mounted() {
-    let data_url = '/circle_pack_data';
     let svg = d3.select('#circle-pack-svg');
     Object.assign(this.$props, this.$route.params);
+    let data_url = '/circle_pack_data';
     axios.get(data_url)
-      .then(res => this.drawCirclePack(svg, res.data))
+      .then(res => {
+        this.$store.commit('setData', res.data);
+        this.drawCirclePack(svg, this.$store.state.circle_pack_data);
+      })
       .catch(e => console.log(e));
   }
 };

@@ -1,17 +1,18 @@
 <template>
   <div id="app">
-    <DetailPage></DetailPage>
+<!--    <HomePage></HomePage>-->
+<!--    <DetailPage></DetailPage>-->
 <!--    <NewDecision></NewDecision>-->
-<!--    <router-view></router-view>-->
+    <router-view></router-view>
 <!--    <CirclePack width=500 height=500 svg_height=700 display_theme=0></CirclePack>-->
   </div>
 </template>
 
 <script>
 import CirclePack from "./components/CirclePack";
-import HomePage from "./components/HomePage";
+import HomePage from "./pages/HomePage";
 import NewDecision from "./components/NewDecision";
-import DetailPage from "./components/DetailPage";
+import DetailPage from "./pages/DetailPage";
 export default {
   name: 'App',
   components: {DetailPage, NewDecision, HomePage, CirclePack},

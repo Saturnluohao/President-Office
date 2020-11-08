@@ -1,67 +1,64 @@
 <template>
-  <div id="decision">
-    <Row>
-      <i-col span="6">
-        <div id="new-decision">
-          <ul id="decision-item">
-            <li>新建决策项</li>
-            <li>决策项标题</li>
-            <li><Input></Input></li>
-            <li>相关节点</li>
-            <li>二级节点</li>
-            <li>
-              <Select
-                v-model="model11"
-                filterable>
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-              </Select>
-            </li>
-            <li>三级节点</li>
-            <li>
-              <Select
-                v-model="model11"
-                filterable>
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-              </Select>
-            </li>
-            <li>四级节点</li>
-            <li>
-              <Select
-                v-model="model11"
-                filterable>
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-              </Select>
-            </li>
-            <li>五级节点</li>
-            <li>
-              <Select
-                v-model="model11"
-                filterable>
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-              </Select>
-            </li>
-            <li>六级节点</li>
-            <li>
-              <Select
-                v-model="model11"
-                filterable>
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-              </Select>
-            </li>
-          </ul>
-        </div>
-        <div id="button">
-          <button>创建</button>
-          <button>取消</button>
-        </div>
-      </i-col>
-    </Row>
+  <div id="new-decision">
+    <ul id="decision-item">
+      <li>新建决策项</li>
+      <li>决策项标题</li>
+      <li><Input></Input></li>
+      <li>相关节点</li>
+      <li>二级节点</li>
+      <li>
+        <Select
+          v-model="model11"
+          filterable>
+          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+      </li>
+      <li>三级节点</li>
+      <li>
+        <Select
+          v-model="model11"
+          filterable>
+          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+      </li>
+      <li>四级节点</li>
+      <li>
+        <Select
+          v-model="model11"
+          filterable>
+          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+      </li>
+      <li>五级节点</li>
+      <li>
+        <Select
+          v-model="model11"
+          filterable>
+          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+      </li>
+      <li>六级节点</li>
+      <li>
+        <Select
+          v-model="model11"
+          filterable>
+          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+      </li>
+    </ul>
+    <div id="button">
+      <button>创建</button>
+      <button @click="backHome">取消</button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "NewDecision",
+  props: {
+    setState: Function
+  },
   data() {
     return {
       model14: [],
@@ -98,13 +95,17 @@ export default {
       list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming']
     }
   },
-  methods: {}
+  methods: {
+    backHome(){
+      this.setState('home_side');
+    }
+  }
 }
 </script>
 
 <style scoped>
-#decision {
-  background: rgb(41, 41, 47);
+#new-decision {
+  height: 100%;
 }
 
 #decision-item {
@@ -140,6 +141,10 @@ export default {
   border: none;
 }
 
+#decision-item >>> .ivu-select-input {
+  color: white;
+}
+
 #decision-item li {
   margin: 10px 0;
 }
@@ -165,13 +170,14 @@ export default {
   width: 60%;
 }
 
-#button button{
+#button button {
   border: 1px solid rgb(55, 55, 62);
   background: rgb(55, 55, 62);
   color: white;
   padding: 5px 20px;
   float: right;
   margin: 0 5px;
+  outline: none;
 }
 
 #button button:hover {
