@@ -5,7 +5,7 @@
         <li>决策事项
           <Icon type="md-add" size="24" @click="addDecision"></Icon>
         </li>
-        <li v-for="(item,i) in menuItems">{{item}}
+        <li v-for="(item,i) in menuItems" @click="toDecision(item)">{{item}}
           <Icon type="ios-arrow-forward"/>
         </li>
       </ul>
@@ -15,6 +15,8 @@
         v-model="model"
         @on-select="onSelected"
         filterable
+        prefix="ios-search"
+        placeholder="输入以搜索"
         :remote-method="remoteMethod">
         <Option v-for="(option, index) in options" :value="option.value" :key="index">{{ option.label }}</Option>
       </Select>
@@ -63,13 +65,9 @@ export default {
     },
     onSelected(item) {
       this.$router.push({
-        name: 'circle_pack',
+        name: 'detail',
         params: {
-          first_focus: item.value,
-          width: 500,
-          height: 500,
-          svg_height: 700,
-          display_theme: "2"
+          first_focus: item.value
         }
       })
     },
@@ -88,6 +86,14 @@ export default {
     },
     addDecision(){
       this.setState('newDecision');
+    },
+    toDecision(name){
+      this.$router.push({
+        name: 'detail',
+        params: {
+          first_focus: name
+        }
+      })
     }
   },
   computed: {
@@ -130,7 +136,7 @@ export default {
   margin: 10px 0;
   text-align: left;
   color: white;
-  background: rgb(55, 55, 62)
+  background: rgb(55, 55, 62);
 }
 
 #homepage-decision-list li:first-child {
@@ -148,6 +154,33 @@ export default {
   width: 60%;
   margin-left: 20%;
   margin-top: 10%;
+}
+
+#homepage-side-bottom >>> .ivu-icon {
+  color: white;
+}
+
+#homepage-side-bottom >>> .ivu-select-selection {
+  background: rgb(55, 55, 62);
+  border: none;
+}
+
+#homepage-side-bottom >>> .ivu-select-input {
+  color: white;
+}
+
+#homepage-side-bottom >>> .ivu-select-dropdown {
+  background: rgb(55, 55, 62);
+}
+
+#homepage-side-bottom >>> .ivu-select-dropdown-list li {
+  color: white;
+  border: 1px solid rgb(55, 55, 62);
+}
+
+#homepage-side-bottom >>> .ivu-select-dropdown-list li:hover {
+  background: rgb(55, 55, 62);
+  border: 1px solid white;
 }
 
 #thumbnail {

@@ -7,12 +7,7 @@ import DetailPage from "../pages/DetailPage";
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/circle_pack',
-      name: 'circle_pack',
-      component: CirclePack
-    },{
+  routes: [{
       path: '/',
       name: 'home',
       component: HomePage

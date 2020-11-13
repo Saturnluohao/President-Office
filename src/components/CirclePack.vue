@@ -24,7 +24,13 @@ export default {
     return {
       circle_group: Object,
       line_group: Object,
-      relations: Map
+      relations: Map,
+      circles: Object,
+      labels: Object,
+      svg: Object,
+      view: Object,
+      focus: Object,
+      focus_selection: Object
     };
   },
   methods: {
@@ -43,7 +49,7 @@ export default {
         let children_length = hierarchy.children.length;
         let sin_value = Math.sin(Math.PI / children_length);
         let sr = hierarchy.r;
-        let cr = (sr * sin_value) / (1 + sin_value);
+        let cr = children_length === 1 ? sr / 2 : (sr * sin_value) / (1 + sin_value);
         for (let i = 0; i < children_length; i++) {
           hierarchy.children[i].r = cr;
           hierarchy.children[i].x =
@@ -132,64 +138,86 @@ export default {
       this.relations.set(new_circle, new_line);
     },
 
-    //绘制圆堆积图
-    drawCirclePack: function (svg, data) {
+    getDepth(json) {
+      let depth = 0;
+
+      function traverse(data, self_depth) {
+        self_depth += 1;
+        depth = self_depth > depth ? self_depth : depth;
+        if (data.children) {
+          for (let i = 0; i < data.children.length; i++) {
+            traverse(data.children[i], self_depth);
+          }
+        }
+      }
+
+      traverse(json, 0);
+      return depth;
+    },
+
+    //聚焦到点击的园
+    zoomTo(v) {
+      const k = this.width / v[2];
+      this.view = v;
+      this.labels.attr(
+        "transform",
+        (d) => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`
+      );
+      this.circles.attr(
+        "transform",
+        (d) => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`
+      );
+      this.circles.attr("r", (d) => d.r * k);
+    },
+
+    //文本的显示与隐藏
+    zoom(event) {
       let self = this;
+      const transition = this.svg
+        .transition()
+        .duration(event.altKey ? 7500 : 750)
+        .tween("zoom", () => {
+          const i = d3.interpolateZoom(this.view, [
+            self.focus.x,
+            self.focus.y,
+            self.focus.r * 2.2,
+          ]);
+          return (t) => this.zoomTo(i(t));
+        });
+      this.labels
+        .transition(transition)
+        .style("fill-opacity", d => d.parent === self.focus || d === self.focus ? 1 : 0)
+        .style("font-size", d => (d === self.focus ? "25px" : "10px"))
+        .style('display', d => d.parent === self.focus || d === self.focus ? 'inline' : 'none')
+    },
 
-      //聚焦到点击的园
-      function zoomTo(v) {
-        const k = self.width / v[2];
-        view = v;
-        label.attr(
-          "transform",
-          (d) => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`
-        );
-        circles.attr(
-          "transform",
-          (d) => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`
-        );
-        circles.attr("r", (d) => d.r * k);
-      }
-
-      //文本的显示与隐藏
-      function zoom(event) {
-        const transition = svg
-          .transition()
-          .duration(event.altKey ? 7500 : 750)
-          .tween("zoom", () => {
-            const i = d3.interpolateZoom(view, [
-              focus.x,
-              focus.y,
-              focus.r * 2.2,
-            ]);
-            return (t) => zoomTo(i(t));
-          });
-        label
-          .transition(transition)
-          .style("fill-opacity", (d) =>
-            d.parent === focus || d === focus ? 1 : 0
-          )
-          .style("font-size", (d) => (d === focus ? "25px" : "10px"))
-          .style('display', d => d.parent === focus || d === focus ? 'inline' : 'none')
-      }
+    //绘制圆堆积图
+    drawCirclePack: function (data) {
+      let self = this;
 
       //整个svg的平移缩放
       function zoomed(event) {
         circle_pack_group.attr("transform", event.transform);
       }
 
+      function getPath(hierarchy) {
+        let path = [];
+        while (hierarchy) {
+          path.unshift(hierarchy.data.name);
+          hierarchy = hierarchy.parent;
+        }
+        return path;
+      }
+
       const root = this.pack(data); //根节点
-      let focus = root;  //当前聚焦节点
-      let focus_selection;  //当前聚焦的圆
-      let circle_pack_group = svg.append('g').attr('id', 'circle-pack-group');
+      let circle_pack_group = this.svg.append('g').attr('id', 'circle-pack-group');
       let color = d3.scaleLinear()
-        .domain([0, 5])
-        .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-        .interpolate(d3.interpolateHcl);
-      let view;
+        .domain([0, this.getDepth(data) - 1])
+        .range(["rgb(122,134,168)", "rgb(13,26,71)"])
+        .interpolate(d3.interpolateRgb);
 
       //设置视窗
-      svg
+      this.svg
         .attr("viewBox", `-${this.width / 2} -${this.height / 2} ${this.width} ${this.height}`)
         .style("display", "block")
         .style("margin", "0 -14px")
@@ -209,45 +237,48 @@ export default {
       this.line_group = circle_pack_group.append("g").attr("id", "lines");
 
       //画圆
-      let circles = this.circle_group
+      let circles = this.circles = this.circle_group
         .selectAll("circle")
         .data(root.descendants())
         .join("circle")
-        .attr("fill", (d) => (d.children ? color(d.depth) : "white"))
+        .attr("fill", (d) => color(d.depth))
         .attr("pointer-events", (d) => (!d.children ? "none" : null))
         .on("click", function (event, data) {
-          if (data !== focus) {
-            focus = data;
+          if (data !== self.focus) {
+            self.focus = data;
             circles.style("display", (d) =>
-              d.depth < focus.depth ||
-              d.depth === focus.depth ||
-              (d.depth === focus.depth + 1 && d.parent === focus)
+              d.depth < self.focus.depth ||
+              d.depth === self.focus.depth ||
+              (d.depth === self.focus.depth + 1 && d.parent === self.focus)
                 ? "inline"
                 : "none"
             );
 
-            //高亮选中的圆
-            let self = d3.select(this);
-            self.attr("stroke-width", 3);
-            self.attr("stroke", "#ffffff");
-
             //移除上一次选中的圆的高亮
-            if (focus_selection) {
-              focus_selection.attr("stroke", null);
+            if (self.focus_selection) {
+              self.focus_selection.attr("stroke", null);
             }
-            focus_selection = self;
+            self.focus_selection = d3.select(this)
+              .attr("stroke-width", 3)
+              .attr("stroke", "#ffffff");
+            ;
           }
-          if (self.setFocus){
-            self.setFocus(data.data.name);
+          if (self.setFocus) {
+            self.setFocus(getPath(data));
           }
-          return (zoom(event), event.stopPropagation());
+          return (self.zoom(event), event.stopPropagation());
+        })
+        .on('contextmenu', function(event, d){
+           event.preventDefault();
+           let clickedCircle = d3.select(this);
+           self.drawRelation(clickedCircle, 60, 50, 10);
         });
 
 
-      svg.call(d3.zoom().scaleExtent([0.5, 10]).on("zoom", zoomed));
+      this.svg.call(d3.zoom().scaleExtent([0.5, 10]).on("zoom", zoomed));
 
       //显示文本
-      const label = circle_pack_group
+      this.labels = circle_pack_group
         .append("g")
         .style("font", "10px sans-serif")
         .attr("pointer-events", "none")
@@ -255,61 +286,64 @@ export default {
         .selectAll("text")
         .data(root.descendants())
         .join("text")
+        .attr('fill', 'white')
         .text((d) => d.data.name);
 
       //首次聚焦
       switch (this.display_theme) {
         case "0":
-          zoomTo([root.x, root.y, root.r * 2.2]);
+          this.zoomTo([root.x, root.y, root.r * 2.2]);
 
-          label.filter(d => d === focus).style('font-size', '25px');
-          label.style("display", d => d.parent === root || d === root ? 'inline' : 'none');
-          label.style("font-size", d => d.parent === root ? this.children_font_size : this.root_font_size);
+          this.labels.filter(d => d === this.focus).style('font-size', '25px');
+          this.labels.style("display", d => d.parent === root || d === root ? 'inline' : 'none')
+            .style("font-size", d => d.parent === root ? this.children_font_size : this.root_font_size);
           break;
         case "1":
-          zoomTo([root.x, root.y, root.r * 2.2]);
-          focus = root;
-          focus_selection = circles.filter((d) => d.depth === 0);
-          focus_selection.attr("stroke-width", 3);
-          focus_selection.attr("stroke", "#ffffff");
-          circles.style("display", (d) =>
-            d.depth <= focus.depth + 1
+          this.zoomTo([root.x, root.y, root.r * 2.2]);
+          this.focus = root;
+          this.focus_selection = circles.filter((d) => d.depth === 0)
+            .attr("stroke-width", 3)
+            .attr("stroke", "#ffffff");
+          this.circles.style("display", (d) =>
+            d.depth <= this.focus.depth + 1
               ? "inline"
               : "none"
           );
-          label.filter(d => d === focus).style('font-size', '25px');
-          label.style("display", (d) => (d.parent === root || d === root ? 'inline' : 'none'))
+          this.labels.filter(d => d === this.focus).style('font-size', '25px');
+          this.labels.style("display", d => d.parent === root || d === root ? 'inline' : 'none');
           break;
         case "2":
-          let should_focus = circles.filter(d => d.data.name === this.first_focus);
-          let should_focus_data = should_focus.datum();
-          zoomTo([should_focus_data.x, should_focus_data.y, should_focus_data.r * 2.2]);
-          focus = should_focus_data;
-          focus_selection = should_focus;
-
-          circles.style("display", (d) =>
-            d.depth <= focus.depth ||
-            (d.depth === focus.depth + 1 && d.parent === focus)
-              ? "inline"
-              : "none"
-          );
-          //高亮选中的圆
-          should_focus.attr("stroke-width", 3);
-          should_focus.attr("stroke", "#ffffff");
-
-          zoom({})
+          this.jumpTo(this.first_focus);
           break;
       }
+    },
+    jumpTo(name) {
+      if (this.focus_selection){
+        this.focus_selection.attr('stroke', 'none');
+      }
+      this.focus_selection = this.circles.filter(d => d.data.name === name)
+        .attr("stroke-width", 3)
+        .attr("stroke", "#ffffff");
+      this.focus = this.focus_selection.datum();
+      this.zoomTo([this.focus.x, this.focus.y, this.focus.r * 2.2]);
+
+      this.circles.style("display", (d) =>
+        d.depth <= this.focus.depth ||
+        (d.depth === this.focus.depth + 1 && d.parent === this.focus)
+          ? "inline"
+          : "none"
+      );
+      this.zoom({})
     }
   },
   mounted() {
-    let svg = d3.select('#circle-pack-svg');
+    this.svg = d3.select('#circle-pack-svg');
     Object.assign(this.$props, this.$route.params);
     let data_url = '/circle_pack_data';
     axios.get(data_url)
       .then(res => {
         this.$store.commit('setData', res.data);
-        this.drawCirclePack(svg, this.$store.state.circle_pack_data);
+        this.drawCirclePack(this.$store.state.circle_pack_data);
       })
       .catch(e => console.log(e));
   }

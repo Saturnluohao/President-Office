@@ -1,379 +1,1015 @@
 let circle_pack_data = {
-  "name": "flare",
+  "name": "校园业务",
   "children": [
     {
-      "name": "analytics",
+      "name": "多方共建",
       "children": [
         {
-          "name": "cluster",
+          "name": "上级教育管理",
           "children": [
-            {"name": "AgglomerativeCluster", "value": 100},
-            {"name": "CommunityStructure", "value": 100},
-            {"name": "HierarchicalCluster", "value": 100},
-            {"name": "MergeEdge", "value": 100}
-          ]
-        },
-        {
-          "name": "graph",
-          "children": [
-            {"name": "BetweennessCentrality", "value": 100},
-            {"name": "LinkDistance", "value": 100},
-            {"name": "MaxFlowMinCut", "value": 100},
-            {"name": "ShortestPaths", "value": 100},
-            {"name": "SpanningTree", "value": 100}
-          ]
-        },
-        {
-          "name": "optimization",
-          "children": [
-            {"name": "AspectRatioBanker", "value": 100}
-          ]
-        }
-      ]
-    },
-    {
-      "name": "animate",
-      "children": [
-        {"name": "Easing", "value": 100},
-        {"name": "FunctionSequence", "value": 100},
-        {
-          "name": "interpolate",
-          "children": [
-            {"name": "ArrayInterpolator", "value": 100},
-            {"name": "ColorInterpolator", "value": 100},
-            {"name": "DateInterpolator", "value": 100},
-            {"name": "Interpolator", "value": 100},
-            {"name": "MatrixInterpolator", "value": 100},
-            {"name": "NumberInterpolator", "value": 100},
-            {"name": "ObjectInterpolator", "value": 100},
-            {"name": "PointInterpolator", "value": 100},
-            {"name": "RectangleInterpolator", "value": 100}
-          ]
-        },
-        {"name": "ISchedulable", "value": 100},
-        {"name": "Parallel", "value": 100},
-        {"name": "Pause", "value": 100},
-        {"name": "Scheduler", "value": 100},
-        {"name": "Sequence", "value": 100},
-        {"name": "Transition", "value": 100},
-        {"name": "Transitioner", "value": 100},
-        {"name": "TransitionEvent", "value": 100},
-        {"name": "Tween", "value": 100}
-      ]
-    },
-    {
-      "name": "data",
-      "children": [
-        {
-          "name": "converters",
-          "children": [
-            {"name": "Converters", "value": 100},
-            {"name": "DelimitedTextConverter", "value": 100},
-            {"name": "GraphMLConverter", "value": 100},
-            {"name": "IDataConverter", "value": 100},
-            {"name": "JSONConverter", "value": 100}
-          ]
-        },
-        {"name": "DataField", "value": 100},
-        {"name": "DataSchema", "value": 100},
-        {"name": "DataSet", "value": 100},
-        {"name": "DataSource", "value": 100},
-        {"name": "DataTable", "value": 100},
-        {"name": "DataUtil", "value": 100}
-      ]
-    },
-    {
-      "name": "display",
-      "children": [
-        {"name": "DirtySprite", "value": 100},
-        {"name": "LineSprite", "value": 100},
-        {"name": "RectSprite", "value": 100},
-        {"name": "TextSprite", "value": 100}
-      ]
-    },
-    {
-      "name": "flex",
-      "children": [
-        {"name": "FlareVis", "value": 100}
-      ]
-    },
-    {
-      "name": "physics",
-      "children": [
-        {"name": "DragForce", "value": 100},
-        {"name": "GravityForce", "value": 100},
-        {"name": "IForce", "value": 100},
-        {"name": "NBodyForce", "value": 100},
-        {"name": "Particle", "value": 100},
-        {"name": "Simulation", "value": 100},
-        {"name": "Spring", "value": 100},
-        {"name": "SpringForce", "value": 100}
-      ]
-    },
-    {
-      "name": "query",
-      "children": [
-        {"name": "AggregateExpression", "value": 100},
-        {"name": "And", "value": 100},
-        {"name": "Arithmetic", "value": 100},
-        {"name": "Average", "value": 100},
-        {"name": "BinaryExpression", "value": 100},
-        {"name": "Comparison", "value": 100},
-        {"name": "CompositeExpression", "value": 100},
-        {"name": "Count", "value": 100},
-        {"name": "DateUtil", "value": 100},
-        {"name": "Distinct", "value": 100},
-        {"name": "Expression", "value": 100},
-        {"name": "ExpressionIterator", "value": 100},
-        {"name": "Fn", "value": 100},
-        {"name": "If", "value": 100},
-        {"name": "IsA", "value": 100},
-        {"name": "Literal", "value": 100},
-        {"name": "Match", "value": 100},
-        {"name": "Maximum", "value": 100},
-        {
-          "name": "methods",
-          "children": [
-            {"name": "add", "value": 100},
-            {"name": "and", "value": 100},
-            {"name": "average", "value": 100},
-            {"name": "count", "value": 100},
-            {"name": "distinct", "value": 100},
-            {"name": "div", "value": 100},
-            {"name": "eq", "value": 100},
-            {"name": "fn", "value": 100},
-            {"name": "gt", "value": 100},
-            {"name": "gte", "value": 100},
-            {"name": "iff", "value": 100},
-            {"name": "isa", "value": 100},
-            {"name": "lt", "value": 100},
-            {"name": "lte", "value": 100},
-            {"name": "max", "value": 100},
-            {"name": "min", "value": 100},
-            {"name": "mod", "value": 100},
-            {"name": "mul", "value": 100},
-            {"name": "neq", "value": 100},
-            {"name": "not", "value": 100},
-            {"name": "or", "value": 100},
-            {"name": "orderby", "value": 100},
-            {"name": "range", "value": 100},
-            {"name": "select", "value": 100},
-            {"name": "stddev", "value": 100},
-            {"name": "sub", "value": 100},
-            {"name": "sum", "value": 100},
-            {"name": "update", "value": 100},
-            {"name": "variance", "value": 100},
-            {"name": "where", "value": 100},
-            {"name": "xor", "value": 100},
-            {"name": "_", "value": 100}
-          ]
-        },
-        {"name": "Minimum", "value": 100},
-        {"name": "Not", "value": 100},
-        {"name": "Or", "value": 100},
-        {"name": "Query", "value": 100},
-        {"name": "Range", "value": 100},
-        {"name": "StringUtil", "value": 100},
-        {"name": "Sum", "value": 100},
-        {"name": "Variable", "value": 100},
-        {"name": "Variance", "value": 100},
-        {"name": "Xor", "value": 100}
-      ]
-    },
-    {
-      "name": "scale",
-      "children": [
-        {"name": "IScaleMap", "value": 100},
-        {"name": "LinearScale", "value": 100},
-        {"name": "LogScale", "value": 100},
-        {"name": "OrdinalScale", "value": 100},
-        {"name": "QuantileScale", "value": 100},
-        {"name": "QuantitativeScale", "value": 100},
-        {"name": "RootScale", "value": 100},
-        {"name": "Scale", "value": 100},
-        {"name": "ScaleType", "value": 100},
-        {"name": "TimeScale", "value": 100}
-      ]
-    },
-    {
-      "name": "util",
-      "children": [
-        {"name": "Arrays", "value": 100},
-        {"name": "Colors", "value": 100},
-        {"name": "Dates", "value": 100},
-        {"name": "Displays", "value": 100},
-        {"name": "Filter", "value": 100},
-        {"name": "Geometry", "value": 100},
-        {
-          "name": "heap",
-          "children": [
-            {"name": "FibonacciHeap", "value": 100},
-            {"name": "HeapNode", "value": 100}
-          ]
-        },
-        {"name": "IEvaluable", "value": 100},
-        {"name": "IPredicate", "value": 100},
-        {"name": "IValueProxy", "value": 100},
-        {
-          "name": "math",
-          "children": [
-            {"name": "DenseMatrix", "value": 100},
-            {"name": "IMatrix", "value": 100},
-            {"name": "SparseMatrix", "value": 100}
-          ]
-        },
-        {"name": "Maths", "value": 100},
-        {"name": "Orientation", "value": 100},
-        {
-          "name": "palette",
-          "children": [
-            {"name": "ColorPalette", "value": 100},
-            {"name": "Palette", "value": 100},
-            {"name": "ShapePalette", "value": 100},
-            {"name": "SizePalette", "value": 100}
-          ]
-        },
-        {"name": "Property", "value": 100},
-        {"name": "Shapes", "value": 100},
-        {"name": "Sort", "value": 100},
-        {"name": "Stats", "value": 100},
-        {"name": "Strings", "value": 100}
-      ]
-    },
-    {
-      "name": "vis",
-      "children": [
-        {
-          "name": "axis",
-          "children": [
-            {"name": "Axes", "value": 100},
-            {"name": "Axis", "value": 100},
-            {"name": "AxisGridLine", "value": 100},
-            {"name": "AxisLabel", "value": 100},
-            {"name": "CartesianAxes", "value": 100}
-          ]
-        },
-        {
-          "name": "controls",
-          "children": [
-            {"name": "AnchorControl", "value": 100},
-            {"name": "ClickControl", "value": 100},
-            {"name": "Control", "value": 100},
-            {"name": "ControlList", "value": 100},
-            {"name": "DragControl", "value": 100},
-            {"name": "ExpandControl", "value": 100},
-            {"name": "HoverControl", "value": 100},
-            {"name": "IControl", "value": 100},
-            {"name": "PanZoomControl", "value": 100},
-            {"name": "SelectionControl", "value": 100},
-            {"name": "TooltipControl", "value": 100}
-          ]
-        },
-        {
-          "name": "data",
-          "children": [
-            {"name": "Data", "value": 100},
-            {"name": "DataList", "value": 100},
-            {"name": "DataSprite", "value": 100},
-            {"name": "EdgeSprite", "value": 100},
-            {"name": "NodeSprite", "value": 100},
             {
-              "name": "render",
-              "children": [
-                {"name": "ArrowType", "value": 100},
-                {"name": "EdgeRenderer", "value": 100},
-                {"name": "IRenderer", "value": 100},
-                {"name": "ShapeRenderer", "value": 100}
-              ]
+              "name": "上级教育管理部门",
+              "children":[
+                {"name":"上级教育部门A"},
+                {"name":"上级教育部门B"},
+                {"name":"上级教育部门C"},
+              ],
             },
-            {"name": "ScaleBinding", "value": 100},
-            {"name": "Tree", "value": 100},
-            {"name": "TreeBuilder", "value": 100}
-          ]
-        },
-        {
-          "name": "events",
-          "children": [
-            {"name": "DataEvent", "value": 100},
-            {"name": "SelectionEvent", "value": 100},
-            {"name": "TooltipEvent", "value": 100},
-            {"name": "VisualizationEvent", "value": 100}
-          ]
-        },
-        {
-          "name": "legend",
-          "children": [
-            {"name": "Legend", "value": 100},
-            {"name": "LegendItem", "value": 100},
-            {"name": "LegendRange", "value": 100}
-          ]
-        },
-        {
-          "name": "operator",
-          "children": [
             {
-              "name": "distortion",
-              "children": [
-                {"name": "BifocalDistortion", "value": 100},
-                {"name": "Distortion", "value": 100},
-                {"name": "FisheyeDistortion", "value": 100}
+              "name":"上级教育管理政策",
+              "children":[
+                {"name":"文件A"},
+                {"name":"文件B"},
+                {"name":"文件C"},
               ]
             },
             {
-              "name": "encoder",
-              "children": [
-                {"name": "ColorEncoder", "value": 100},
-                {"name": "Encoder", "value": 100},
-                {"name": "PropertyEncoder", "value": 100},
-                {"name": "ShapeEncoder", "value": 100},
-                {"name": "SizeEncoder", "value": 100}
+              "name":"上级教育管理活动",
+              "chiildren":[
+                {"name":"活动A"},
+                {"name":"活动B"},
+                {"name":"活动C"},
               ]
             },
-            {
-              "name": "filter",
-              "children": [
-                {"name": "FisheyeTreeFilter", "value": 100},
-                {"name": "GraphDistanceFilter", "value": 100},
-                {"name": "VisibilityFilter", "value": 100}
-              ]
-            },
-            {"name": "IOperator", "value": 100},
-            {
-              "name": "label",
-              "children": [
-                {"name": "Labeler", "value": 100},
-                {"name": "RadialLabeler", "value": 100},
-                {"name": "StackedAreaLabeler", "value": 100}
-              ]
-            },
-            {
-              "name": "layout",
-              "children": [
-                {"name": "AxisLayout", "value": 100},
-                {"name": "BundledEdgeRouter", "value": 100},
-                {"name": "CircleLayout", "value": 100},
-                {"name": "CirclePackingLayout", "value": 100},
-                {"name": "DendrogramLayout", "value": 100},
-                {"name": "ForceDirectedLayout", "value": 100},
-                {"name": "IcicleTreeLayout", "value": 100},
-                {"name": "IndentedTreeLayout", "value": 100},
-                {"name": "Layout", "value": 100},
-                {"name": "NodeLinkTreeLayout", "value": 100},
-                {"name": "PieLayout", "value": 100},
-                {"name": "RadialTreeLayout", "value": 100},
-                {"name": "RandomLayout", "value": 100},
-                {"name": "StackedAreaLayout", "value": 100},
-                {"name": "TreeMapLayout", "value": 100}
-              ]
-            },
-            {"name": "Operator", "value": 100},
-            {"name": "OperatorList", "value": 100},
-            {"name": "OperatorSequence", "value": 100},
-            {"name": "OperatorSwitch", "value": 100},
-            {"name": "SortOperator", "value": 100}
           ]
         },
-        {"name": "Visualization", "value": 100}
+        {
+          "name": "校友管理",
+          "children": [
+            {
+              "name": "杰出校友",
+              "children":[
+                {"name":"校友A"},
+                {"name":"校友B"},
+                {"name":"校友C"},
+              ]
+            },
+            {
+              "name":"校友合作",
+              "children":[
+                {
+                  "name":"合作课程",
+                  "children":[
+                    {"name":"课程A"},
+                    {"name":"课程B"},
+                    {"name":"课程C"},
+                  ]
+                },
+                {
+                  "name":"合作活动",
+                  "children":[
+                    {"name":"活动A"},
+                    {"name":"活动B"},
+                    {"name":"活动C"},
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+        {
+          "name": "家校共建",
+          "children": [
+            {
+              "name": "家长培训",
+              "children":[
+                {
+                  "name":"家校联合课程",
+                  "children":[
+                    {"name":"课程A"},
+                    {"name":"课程B"},
+                    {"name":"课程C"},
+                  ]
+                },
+                {
+                  "name":"家长个人成长",
+                  "children":[
+                    {"name":"文件A"},
+                    {"name":"文件B"},
+                    {"name":"文件C"},
+                  ]
+                },
+              ]
+            },
+            {
+              "name":"家委会",
+              "children":[
+                {
+                  "name":"家委会成员",
+                  "children":[
+                    {"name":"家长A"},
+                    {"name":"家长B"},
+                    {"name":"家长C"},
+                  ]
+                },
+                {
+                  "name":"召开计划",
+                  "children":[
+                    {"name":"文件A"},
+                    {"name":"文件B"},
+                    {"name":"文件C"},
+                  ]
+                },
+              ]
+            },
+            {
+              "name":"家长会",
+              "children":[
+                {
+                  "name":"家长会人员",
+                  "children":[
+                    {
+                      "name":"家长",
+                      "children":[
+                        {"name":"家长A"},
+                        {"name":"家长B"},
+                        {"name":"家长C"},
+                      ]
+                    },
+                    {
+                      "name":"班主任",
+                      "children":[
+                        {"name":"教师A"},
+                        {"name":"教师B"},
+                        {"name":"教师C"},
+                      ]
+                    },
+                  ]
+                },
+                {
+                  "name":"工作计划",
+                  "children":[
+                    {"name":"文件A"},
+                    {"name":"文件B"},
+                    {"name":"文件C"},
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+        {
+          "name": "国内外高校合作",
+          "children": [
+            {
+              "name": "国内外高校",
+              "children":[
+                {"name":"国内外高校A"},
+                {"name":"国内外高校B"},
+                {"name":"国内外高校C"},
+              ]
+            },
+            {
+              "name":"合作简章",
+              "children":[
+                {"name":"文件A"},
+                {"name":"文件B"},
+                {"name":"文件C"},
+              ]
+            },
+            {
+              "name":"合作活动",
+              "children":[
+                {"name":"活动A"},
+                {"name":"活动B"},
+                {"name":"活动C"},
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      "name": "学校资产",
+      "children": [
+        {
+          "name": "房屋和建筑物",
+          "children": [
+            {"name": "房屋", "children":[
+                {"name":"办公用房"},
+                {"name":"教学科研用房"},
+                {"name":"教工宿舍"},
+                {"name":"学生宿舍"},
+                {"name":"食堂"},
+              ]
+            },
+            {"name": "建筑物", "children":[
+                {"name":"道路"},
+                {"name":"运动操场"},
+                {"name":"围墙"},
+              ]
+            },
+            {"name": "附属设备", "children":[
+                {"name":"房屋"},
+                {"name":"建筑物内的通讯线路"},
+                {"name":"水气管道"},
+                {"name":"植物"},
+              ]
+            },
+
+          ]
+        },
+        {
+          "name": "专用设备",
+          "children": [
+            {"name": "仪器与装置设备", "children":[
+                {"name":"物理设备"},
+                {"name":"化学设备"},
+              ]
+            },
+            {"name": "电子设备", "children":[
+                {"name":"计算机"},
+              ]
+            },
+            {"name": "文体设备", "children":[
+                {"name":"音乐设备"},
+                {"name":"体育设备"},
+              ]
+            },
+            {"name": "医疗设备", "children":[
+                {"name":"医疗器械"},
+                {"name":"药品"},
+              ]
+            },
+
+          ]
+        },
+        {
+          "name": "一般设备",
+          "children": [
+            {"name": "行政办公设备", "children":[
+                {"name":"桌椅"},
+                {"name":"打印机"},
+                {"name":"文具"},
+              ]
+            },
+            {"name": "机电设备", "children":[
+                {"name":"照明系统"},
+                {"name":"空调系统"},
+                {"name":"水电系统"},
+              ]
+            },
+            {"name": "交通工具", "children":[
+                {"name":"校车班车"},
+              ]
+            },
+            {"name": "消防设备", "children":[
+                {"name":"消防栓"},
+                {"name":"灭火器"},
+              ]
+            },
+
+          ]
+        },
+        {
+          "name": "文物与图书",
+          "children": [
+            {"name": "实体资产", "children":[
+                {"name":"图书"},
+                {"name":"期刊"},
+                {"name":"光盘资料"},
+                {"name":"古玩"},
+                {"name":"字画"},
+                {"name":"纪念品"},
+                {"name":"装饰品"},
+                {"name":"展品"},
+                {"name":"藏品"},
+              ]
+            },
+            {"name": "数字化资产",
+              "children":[
+                {"name":"电子数据库"},
+              ]
+            },
+          ]
+        },
+        {"name":"其他固定资产"},
+      ]
+    },
+    {
+      "name": "收入管理",
+      "children": [
+        {"name": "财政补助收入",
+          "children": [
+            {"name":"工资福利经费",
+              "children": [
+                {"name": "实体资产",
+                  "children":[
+                    {"name":"文件A"},
+                    {"name":"文件B"},
+                    {"name":"文件C"},
+                  ]
+                },
+                {"name":"补助经费",
+                  "children":[
+                    {"name":"文件A"},
+                    {"name":"文件B"},
+                    {"name":"文件C"},
+                  ]
+                },
+              ]
+            },
+            {"name": "教育事业收入",
+              "children": [
+                {"name":"学费",
+                  "children":[
+                    {"name":"文件A"},
+                    {"name":"文件B"},
+                    {"name":"文件C"},
+                  ]
+                },
+                {"name":"住宿费",
+                  "children":[
+                    {"name":"文件A"},
+                    {"name":"文件B"},
+                    {"name":"文件C"},
+                  ]
+                },
+              ]
+            },
+            {"name": "其他收入",
+              "children": [
+                {"name":"捐赠收入",
+                  "children":[
+                    {"name":"文件A"},
+                    {"name":"文件B"},
+                    {"name":"文件C"},
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+        {
+          "name": "支出管理",
+          "children": [
+            {"name": "教育事业支出",
+              "children": [
+                {"name":"人员经费支出",
+                  "children":[
+                    {"name":"教职工工资",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"教职工奖金福利",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"奖学金",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"助学金",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                  ]
+                },
+                {"name":"公用经费支出",
+                  "children":[
+                    {"name":"教学、科研和办公费用",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"教学仪器、设备、图示资料购置经费",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                  ]
+                },
+              ]
+            },
+            {"name": "基本建设支出",
+              "children": [
+                {"name":"设施建设支出",
+                  "children":[
+                    {"name":"教学楼建设",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"逸夫楼建设",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"艺体楼假设",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"办公楼建设",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"田径场建设",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"报告厅建设",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"学生宿舍建设",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                    {"name":"食堂建设",
+                      "children":[
+                        {"name":"文件A"},
+                      ]
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      "name": "教育教学管理",
+      "children": [
+        //教学课程管理
+        {
+          "name": "教学课程管理",
+          "children": [
+            {"name": "普通高中课程",
+              "children": [
+                {"name": "国家课程"},
+                {"name": "校本课程"}
+              ]
+            },
+            {
+              "name": "中美国际课程",
+              "children": [
+                {"name": "高中基本课程"},
+                {"name": "国际课程"}
+              ]
+            }
+          ]
+        },
+        //招生
+        {
+          "name": "招生",
+
+          "children": [
+            {
+              "name": "招生计划",
+              "children": [
+                {"name": "招生动态"},
+                {"name": "招生简章"}
+              ]
+            },
+            {
+              "name": "录取管理",
+              "children": [
+                {"name": "录取人员"},
+                {"name": "档案移交"},
+                {"name": "缴费状态"}
+              ]
+            }
+          ]
+        },
+        //班级管理
+        {
+          "name": "班级管理",
+
+          "children": [
+            {
+              "name": "班级考核",
+              "children": [
+                {"name": "荣誉"},
+                {"name": "成绩"},
+                {"name": "出勤率"},
+                {"name": "班风班纪"}
+              ]
+            },
+            {
+              "name": "基本信息"
+            }
+          ]
+        },
+        //活动管理
+        {
+          "name": "活动管理",
+
+          "children": [
+            {
+              "name": "当前活动管理",
+              "children": [
+                {
+                  "name": "校级",
+                  "children": [
+                    {"name": "xx活动"},
+                    {"name": "xx活动"}
+                  ]
+                },
+                {
+                  "name": "市级",
+                  "children": [
+                    {"name": "xx活动"},
+                    {"name": "xx活动"}
+                  ]
+                },
+                {
+                  "name": "省级",
+                  "children": [
+                    {"name": "xx活动"},
+                    {"name": "xx活动"}
+                  ]
+                },
+                {
+                  "name": "国家级",
+                  "children": [
+                    {"name": "xx活动"},
+                    {"name": "xx活动"}
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "以往活动",
+              "children": [
+                {"name": "xx活动"},
+                {"name": "xx活动"},
+                {"name": "xx活动"}
+              ]
+            }
+          ]
+        },
+        //竞赛管理
+        {
+          "name": "竞赛管理",
+          "children": [
+            {
+              "name": "已获奖项",
+              "children": [
+                {
+                  "name": "校级",
+                  "children": [
+                    {"name": "xx竞赛"},
+                    {"name": "xx竞赛"}
+                  ]
+                },
+                {
+                  "name": "市级",
+                  "children": [
+                    {"name": "xx竞赛"},
+                    {"name": "xx竞赛"}
+                  ]
+                },
+                {
+                  "name": "省级",
+                  "children": [
+                    {"name": "xx竞赛"},
+                    {"name": "xx竞赛"}
+                  ]
+                },
+                {
+                  "name": "国家级",
+                  "children": [
+                    {"name": "xx竞赛"},
+                    {"name": "xx竞赛"}
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        //荣誉管理
+        {
+          "name": "荣誉管理",
+
+          "children": [
+            {
+              "name": "学校荣誉",
+              "children": [
+                {
+                  "name": "市级",
+                  "children": [
+                    {"name": "2019市示范性普通高中"},
+                    {"name": "2020市示范性普通高中"}
+                  ]
+                },
+                {
+                  "name": "省级",
+                  "children": [
+                    {"name": "2019市示范性普通高中"},
+                    {"name": "2020市示范性普通高中"}
+                  ]
+                },
+                {
+                  "name": "国家级",
+                  "children": [
+                    {"name": "2019国家示范性普通高中"},
+                    {"name": "2020国家示范性普通高中"}
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "教师荣誉",
+              "children": [
+                {
+                  "name": "校级",
+                  "children": [
+                    {"name": "学科带头人"},
+                    {"name": "教学设计创新奖"}
+                  ]
+                },
+                {
+                  "name": "市级",
+                  "children": [
+                    {"name": "2019市优秀青年教师奖 "},
+                    {"name": "2020市骨干教师"}
+                  ]
+                },
+                {
+                  "name": "省级",
+                  "children": [
+                    {"name": "2019省优秀技能大赛指导教师奖"},
+                    {"name": "2020省优秀技能大赛指导教师奖"}
+                  ]
+                },
+                {
+                  "name": "国家级",
+                  "children": [
+                    {"name": "全国模范教师奖"},
+                    {"name": "全国优秀教师"}
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        //校本特色
+        {
+          "name": "校本特色",
+          "children": [
+            {"name": "特色课程"},
+            {"name": "特色活动"},
+            {
+              "name": "特色学科实验室建设",
+              "children": [
+                {
+                  "name": "美术版画教室",
+                  "children": [
+                    {"name": "负责教师"},
+                    {"name": "教学课程规划"},
+                    {"name": "活动安排"},
+                    {"name": "竞赛"},
+                    {"name": "专业设备"},
+                    {"name": "房屋建筑"}
+                  ]
+                },
+                {
+                  "name": "创客实验室",
+                  "children": [
+                    {"name": "负责教师"},
+                    {"name": "教学课程规划"},
+                    {"name": "活动安排"},
+                    {"name": "竞赛"},
+                    {"name": "专业设备"},
+                    {"name": "房屋建筑"}
+                  ]
+                },
+                {
+                  "name": "人工智能实验室",
+                  "children": [
+                    {"name": "负责教师"},
+                    {"name": "教学课程规划"},
+                    {"name": "活动安排"},
+                    {"name": "竞赛"},
+                    {"name": "专业设备"},
+                    {"name": "房屋建筑"}
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        //毕业去向
+        {"name": "毕业去向与升学率"}
+      ]
+    },
+    {
+      "name": "教师学生管理",
+      "children": [
+        //教师管理
+        {
+          "name": "教师管理",
+          "children": [
+            {"name": "考核评优",
+              "children": [
+                {
+                  "name": "优秀班主任评选",
+                  "children": [
+                    {"name": "候选老师"},
+                    {"name": "评选标准"}
+                  ]
+                },
+                {
+                  "name": "优秀年级主任评选",
+                  "children": [
+                    {"name": "候选老师"},
+                    {"name": "评选标准"}
+                  ]
+                },
+                {
+                  "name": "教学能手评选",
+                  "children": [
+                    {"name": "候选老师"},
+                    {"name": "评选标准"}
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "人事调配",
+              "children": [
+                {"name": "现有组织架构"}
+              ]
+            },
+            {
+              "name": "人员管理",
+              "children": [
+                {
+                  "name": "管理层",
+                  "children": [
+                    {"name": "德育处"},
+                    {"name": "财务处"},
+                    {"name": "教务处"},
+                    {"name": "总务处"},
+                    {"name": "政教处"},
+                    {"name": "党支部"},
+                    {"name": "办公室"},
+                    {"name": "招生办"},
+                    {"name": "工会"},
+                    {"name": "校长办公室"}
+                  ]
+                },
+                {
+                  "name": "教学教师",
+                  "children": [
+                    {"name": "高一"},
+                    {"name": "高二"},
+                    {"name": "高三"}
+                  ]
+                }
+              ]
+            },
+          ]
+        },
+        //学生管理
+        {
+          "name": "学生管理",
+          "children": [
+            //人员管理
+            {
+              "name": "人员管理",
+              "children": [
+                {
+                  "name": "高一",
+                  "children": [
+                    {"name": "高一（1）班"},
+                    {"name": "高一（x)班"}
+                  ]
+                },
+                {
+                  "name": "高二",
+                  "children": [
+                    {"name": "高二（1）班"},
+                    {"name": "高二（x)班"}
+                  ]
+                },
+                {
+                  "name": "高三",
+                  "children": [
+                    {"name": "高三（1）班"},
+                    {"name": "高三（x)班"}
+                  ]
+                }
+              ]
+            },
+            //考核评优
+            {
+              "name": "考核评优",
+              "children": [
+                {
+                  "name": "荣誉评选",
+                  "children": [
+                    {
+                      "name": "校级荣誉",
+                      "children": [
+                        {
+                          "name": "荣誉A",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        },
+                        {
+                          "name": "荣誉B",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        },
+                        {
+                          "name": "校级荣誉C",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "市级荣誉",
+                      "children": [
+                        {
+                          "name": "荣誉A",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        },
+                        {
+                          "name": "荣誉B",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        },
+                        {
+                          "name": "校级荣誉C",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "省级荣誉",
+                      "children": [
+                        {
+                          "name": "荣誉A",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        },
+                        {
+                          "name": "荣誉B",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        },
+                        {
+                          "name": "校级荣誉C",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "国家级荣誉",
+                      "children": [
+                        {
+                          "name": "荣誉A",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        },
+                        {
+                          "name": "荣誉B",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        },
+                        {
+                          "name": "校级荣誉C",
+                          "children": [
+                            {"name": "候选学生"},
+                            {"name": "评选要求"}
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "成绩考核",
+                  "children": [
+                    {"name": "语文"},
+                    {"name": "数学"},
+                    {"name": "历史"},
+                    {"name": "xx"}
+                  ]
+                }
+
+              ]
+            },
+            //选拔
+            {
+              "name": "选拔",
+              "children": [
+                {
+                  "name": "夏令营选拔",
+                  "children": [
+                    {
+                      "name": "2020清华夏令营",
+                      "children": [
+                        {"name": "候选学生"},
+                        {"name": "官方文件"}
+
+                      ]
+                    },
+                    {
+                      "name": "2020北大夏令营",
+                      "children": [
+                        {"name": "候选学生"},
+                        {"name": "官方文件"}
+
+                      ]
+                    }
+
+                  ]
+                },
+                {
+                  "name": "竞赛选拔",
+                  "children": [
+                    {
+                      "name": "2020全国物理竞赛",
+                      "children": [
+                        {"name": "候选学生"},
+                        {"name": "指导老师"},
+                        {"name": "选拔要求"}
+
+                      ]
+                    },
+                    {
+                      "name": "2020全国XX竞赛",
+                      "children": [
+                        {"name": "候选学生"},
+                        {"name": "指导老师"},
+                        {"name": "选拔要求"}
+
+                      ]
+                    }
+
+                  ]
+                },
+                {
+                  "name": "学生组织选拔",
+                  "children": [
+                    {
+                      "name": "校学生会主席选拔",
+                      "children": [
+                        {"name": "候选学生"}
+                      ]
+                    },
+                    {
+                      "name": "XX选拔",
+                      "children": [
+                        {"name": "候选学生"}
+                      ]
+                    }
+
+                  ]
+                }
+
+              ]
+            },
+            //素质教育
+            {
+              "name": "素质教育",
+              "children": [
+                {"name": "心理健康"},
+                {"name": "学生组织"},
+                {"name": "志愿活动"}
+              ]
+            }
+          ]
+        },
+
       ]
     }
   ]

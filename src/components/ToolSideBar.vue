@@ -1,13 +1,13 @@
 <template>
   <div id="tool-side-bar">
     <ul id="tool-list">
-      <li>
-        <Icon type="ios-home" size="32" @click="toHome"></Icon>
+      <li @click="reset('校园业务')">
+        <Icon type="ios-home" size="32"></Icon>
       </li>
-      <li>
+      <li @click="showMenu">
         <Icon type="ios-menu" size="32"></Icon>
       </li>
-      <li>
+      <li @click="toHome">
         <Icon type="ios-contract" size="32"></Icon>
       </li>
       <li>
@@ -20,6 +20,10 @@
 <script>
 export default {
   name: "ToolSideBar",
+  props:{
+    showMenu: Function,
+    reset: Function
+  },
   methods: {
     toHome() {
       this.$router.push('/');

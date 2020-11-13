@@ -2,17 +2,17 @@
   <div id="detail-page">
     <Row>
       <i-col span="2">
-        <ToolSideBar></ToolSideBar>
+        <ToolSideBar :showMenu="showMenu" :reset="jumpTo"></ToolSideBar>
       </i-col>
       <i-col span="11">
         <div id="circle-pack">
-          <CirclePack width=400 height=400 svg_height=600 display_theme=1 :setFocus="setFocus"></CirclePack>
+          <CirclePack width=400 height=400 svg_height=600 :display_theme="display_theme" :first_focus="currentFocus" :setFocus="setFocus" ref="circlepack"></CirclePack>
         </div>
       </i-col>
       <i-col span="11">
         <div id="detail">
           <div id="intro-card">
-            <p id="intro-title">{{currentFocus}}</p>
+            <p id="intro-title">{{currentFocus[currentFocus.length - 1]}} <Icon type="ios-arrow-forward"></Icon> </p>
             <p id="intro-desc">
               描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述
             </p>
@@ -39,7 +39,7 @@
           </div>
           <div id="business" v-else>
             <ul id="detailpage-decision-list">
-              <li v-for="(item,i) in menuItems">
+              <li v-for="(item,i) in menuItems" @click="jumpTo(item)">
                 {{item}}
                 <Icon type="ios-arrow-forward"/>
               </li>
@@ -48,28 +48,38 @@
         </div>
       </i-col>
     </Row>
+    <SideMenu ref="sidemenu" :setFocus="setFocus" :jumpTo="jumpTo"></SideMenu>
   </div>
 </template>
 
 <script>
 import CirclePack from "../components/CirclePack";
 import ToolSideBar from "../components/ToolSideBar";
+import SideMenu from "../components/SideMenu";
 
 export default {
   name: "DetailPage",
   data(){
     return {
+      display_theme: "1",
       currentState: "role",
-      currentFocus: 'flare'
+      currentFocus: ['校园业务'],
+      bar_or_menu: true
     }
   },
-  components: {ToolSideBar, CirclePack},
+  components: {SideMenu, ToolSideBar, CirclePack},
   methods: {
     setState(state){
       this.currentState = state;
     },
     setFocus(focus){
       this.currentFocus = focus;
+    },
+    showMenu(){
+      this.$refs.sidemenu.showMenu();
+    },
+    jumpTo(name){
+      this.$refs.circlepack.jumpTo(name);
     }
   },
   computed: {
@@ -80,25 +90,23 @@ export default {
       return this.currentState === "role" ? "white" : "#66646F";
     },
     menuItems(){
-      let menu = [], queue = [];
+      let menu = [];
       if (this.$store.state.circle_pack_data){
-        queue.push(this.$store.state.circle_pack_data);
-        while (queue.length !== 0){
-          let p = queue.shift();
-          if (p.name === this.currentFocus){
-            for(let i = 0; i < p.children.length; i++){
-              menu.push(p.children[i]);
-            }
-            break;
-          }
-          else if (p.children){
-            for(let i = 0; i < p.children.length; i++){
-              queue.push(p.children[i]);
-            }
-          }
+        let cursor = this.$store.state.circle_pack_data;
+        for (let i = 1; i < this.currentFocus.length; i++){
+          cursor = cursor.children.filter(d => d.name === this.currentFocus[i])[0];
+        }
+        for(let i = 0; cursor.children && i < cursor.children.length; i++){
+          menu.push(cursor.children[i]);
         }
       }
-      return menu.slice(0, 5).map(d => d.name);
+      return (menu.length > 5 ? menu.slice(0, 5) : menu).map(d => d.name);
+    }
+  },
+  mounted() {
+    if (this.$route.params.first_focus){
+      this.currentFocus = this.$route.params.first_focus;
+      this.display_theme = "2";
     }
   },
   beforeCreate(){
@@ -132,6 +140,10 @@ export default {
   width: 80%;
   margin-left: 10%;
   margin-top: 10%;
+  color: white;
+}
+
+#intro-car i{
   color: white;
 }
 
