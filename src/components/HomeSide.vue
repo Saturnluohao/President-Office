@@ -22,12 +22,12 @@
       </Select>
     </div>
     <div id="thumbnail">
-      <CirclePack width=100 height=100 svg_height="250" display_theme=0 root_font_size=8
+      <CirclePack width=100 height=100 svg_height="250" svg_width="250" display_theme=0 root_font_size=8
                   children_font_size=4></CirclePack>
     </div>
-    <div id="expand-icon">
-      <Icon type="ios-expand" size="32" @click="expand"></Icon>
-    </div>
+<!--    <div id="expand-icon">-->
+<!--      <Icon type="ios-expand" size="32" @click="expand"></Icon>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -119,14 +119,10 @@ export default {
 </script>
 
 <style scoped>
-#homepage-side {
-  height: 100%;
-}
-
 #homepage-decision-list {
   list-style: none;
-  width: 60%;
-  margin-left: 20%;
+  width: 70%;
+  margin-left: 15%;
 }
 
 #homepage-decision-list li {
@@ -151,8 +147,8 @@ export default {
 }
 
 #homepage-side-bottom {
-  width: 60%;
-  margin-left: 20%;
+  width: 70%;
+  margin-left: 15%;
   margin-top: 10%;
 }
 
@@ -184,15 +180,15 @@ export default {
 }
 
 #thumbnail {
-  width: 60%;
-  margin-left: 20%;
+  width: 70%;
+  margin-left: 15%;
   margin-top: 5%;
 }
 
-#expand-icon i {
-  width: 60%;
-  margin-left: 40%;
-  float: right;
-  color: white;
-}
+/*#expand-icon i {*/
+/*  width: 60%;*/
+/*  margin-left: 40%;*/
+/*  float: right;*/
+/*  color: white;*/
+/*}*/
 </style>

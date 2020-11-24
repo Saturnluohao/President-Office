@@ -14,7 +14,8 @@ export default {
     first_focus: String,
     width: Number,
     height: Number,
-    svg_height: Number,
+    svg_height: Object,
+    svg_width: Object,
     display_theme: String,
     root_font_size: Number,
     children_font_size: Number,
@@ -30,7 +31,8 @@ export default {
       svg: Object,
       view: Object,
       focus: Object,
-      focus_selection: Object
+      focus_selection: null,
+      color: ["#2A427A", "#2D4A88", "#1E3B7A", "#183474", "#132A62", "#091E54", "#091A44", "#000000"]
     };
   },
   methods: {
@@ -180,7 +182,7 @@ export default {
           const i = d3.interpolateZoom(this.view, [
             self.focus.x,
             self.focus.y,
-            self.focus.r * 2.2,
+            self.focus.r * 2.4,
           ]);
           return (t) => this.zoomTo(i(t));
         });
@@ -189,6 +191,15 @@ export default {
         .style("fill-opacity", d => d.parent === self.focus || d === self.focus ? 1 : 0)
         .style("font-size", d => (d === self.focus ? "25px" : "10px"))
         .style('display', d => d.parent === self.focus || d === self.focus ? 'inline' : 'none')
+    },
+
+    getPath(hierarchy) {
+      let path = [];
+      while (hierarchy) {
+        path.unshift(hierarchy.data.name);
+        hierarchy = hierarchy.parent;
+      }
+      return path;
     },
 
     //绘制圆堆积图
@@ -200,21 +211,12 @@ export default {
         circle_pack_group.attr("transform", event.transform);
       }
 
-      function getPath(hierarchy) {
-        let path = [];
-        while (hierarchy) {
-          path.unshift(hierarchy.data.name);
-          hierarchy = hierarchy.parent;
-        }
-        return path;
-      }
-
       const root = this.pack(data); //根节点
       let circle_pack_group = this.svg.append('g').attr('id', 'circle-pack-group');
-      let color = d3.scaleLinear()
-        .domain([0, this.getDepth(data) - 1])
-        .range(["rgb(122,134,168)", "rgb(13,26,71)"])
-        .interpolate(d3.interpolateRgb);
+      // let color = d3.scaleLinear()
+      //   .domain([0, this.getDepth(data) - 1])
+      //   .range(["rgb(122,134,168)", "rgb(13,26,71)"])
+      //   .interpolate(d3.interpolateRgb);
 
       //设置视窗
       this.svg
@@ -223,11 +225,9 @@ export default {
         .style("margin", "0 -14px")
         .style("cursor", "pointer")
         .attr("height", this.svg_height)
+        .attr("width", this.svg_height)
         .on("click", (event) => {
           console.log("Clicked: ", event.x, event.y);
-          // focus = root;
-          // focus_selection = circles.filter(d => d.depth === 0);
-          // zoom(event);
         });
 
       this.circle_group = circle_pack_group
@@ -241,7 +241,7 @@ export default {
         .selectAll("circle")
         .data(root.descendants())
         .join("circle")
-        .attr("fill", (d) => color(d.depth))
+        .attr("fill", (d) => this.color[d.depth])
         .attr("pointer-events", (d) => (!d.children ? "none" : null))
         .on("click", function (event, data) {
           if (data !== self.focus) {
@@ -264,14 +264,14 @@ export default {
             ;
           }
           if (self.setFocus) {
-            self.setFocus(getPath(data));
+            self.setFocus(self.getPath(data));
           }
           return (self.zoom(event), event.stopPropagation());
         })
-        .on('contextmenu', function(event, d){
-           event.preventDefault();
-           let clickedCircle = d3.select(this);
-           self.drawRelation(clickedCircle, 60, 50, 10);
+        .on('contextmenu', function (event, d) {
+          event.preventDefault();
+          let clickedCircle = d3.select(this);
+          self.drawRelation(clickedCircle, 60, 50, 10);
         });
 
 
@@ -297,9 +297,15 @@ export default {
           this.labels.filter(d => d === this.focus).style('font-size', '25px');
           this.labels.style("display", d => d.parent === root || d === root ? 'inline' : 'none')
             .style("font-size", d => d.parent === root ? this.children_font_size : this.root_font_size);
+          this.svg.on("click", function(event) {
+            self.$router.push({
+              name: 'detail'
+            })
+          });
+          this.circles.on("click", null);
           break;
         case "1":
-          this.zoomTo([root.x, root.y, root.r * 2.2]);
+          this.zoomTo([root.x, root.y, root.r * 2.4]);
           this.focus = root;
           this.focus_selection = circles.filter((d) => d.depth === 0)
             .attr("stroke-width", 3)
@@ -316,9 +322,14 @@ export default {
           this.jumpTo(this.first_focus);
           break;
       }
-    },
+    }
+    ,
     jumpTo(name) {
-      if (this.focus_selection){
+      let selected = this.circles.filter(d => d.data.name === name).datum();
+      let path = this.getPath(selected);
+      this.setFocus(path);
+
+      if (this.focus_selection) {
         this.focus_selection.attr('stroke', 'none');
       }
       this.focus_selection = this.circles.filter(d => d.data.name === name)
@@ -334,6 +345,9 @@ export default {
           : "none"
       );
       this.zoom({})
+    },
+    locate(){
+      this.svg.select("#circle-pack-group").attr('transform', d3.zoomIdentity);
     }
   },
   mounted() {
@@ -347,7 +361,8 @@ export default {
       })
       .catch(e => console.log(e));
   }
-};
+}
+;
 </script>
 
 <style scoped>

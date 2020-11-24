@@ -1,19 +1,23 @@
 <template>
   <div id="tool-side-bar">
     <ul id="tool-list">
-      <li @click="reset('校园业务')">
-        <Icon type="ios-home" size="32"></Icon>
-      </li>
       <li @click="showMenu">
         <Icon type="ios-menu" size="32"></Icon>
       </li>
-      <li @click="toHome">
-        <Icon type="ios-contract" size="32"></Icon>
+      <li @click="toSelected">
+        <svg>
+          <circle r="12" stroke="white" stroke-width="2px" cx="16" cy="16">
+          </circle>
+          <circle r="6" stroke="white" stroke-width="2px" cx="16" cy="16"></circle>
+        </svg>
       </li>
       <li>
-        <Icon type="ios-search" size="32"></Icon>
+        <Icon type="ios-search" size="32" @click="showSearch"></Icon>
       </li>
     </ul>
+    <div @click="home" id="home">
+      <Icon type="ios-home" size="32"></Icon>
+    </div>
   </div>
 </template>
 
@@ -22,10 +26,15 @@ export default {
   name: "ToolSideBar",
   props:{
     showMenu: Function,
-    reset: Function
+    reset: Function,
+    locate: Function,
+    showSearch: Function
   },
   methods: {
-    toHome() {
+    toSelected() {
+      this.locate();
+    },
+    home(){
       this.$router.push('/');
     }
   }
@@ -33,14 +42,15 @@ export default {
 </script>
 
 <style scoped>
-#tool-list i {
-  color: white;
-}
-
 #tool-side-bar {
   display: flex;
   align-items: center;
   height: 100%;
+}
+
+#tool-side-bar i {
+  color: white;
+  cursor: pointer;
 }
 
 #tool-list {
@@ -49,10 +59,17 @@ export default {
 }
 
 #tool-list li {
-  margin: 15px 0;
+  margin: 20px 0;
 }
 
-#tool-list li:nth-child(2) {
-  margin-bottom: 70px;
+#tool-list li:nth-child(2) svg {
+  height: 32px;
+  width: 32px;
+}
+
+#home {
+  position: absolute;
+  bottom: 5%;
+  margin-left: 30%;
 }
 </style>

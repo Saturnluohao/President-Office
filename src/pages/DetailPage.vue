@@ -1,54 +1,60 @@
 <template>
   <div id="detail-page">
-    <Row>
-      <i-col span="2">
-        <ToolSideBar :showMenu="showMenu" :reset="jumpTo"></ToolSideBar>
-      </i-col>
-      <i-col span="11">
-        <div id="circle-pack">
-          <CirclePack width=400 height=400 svg_height=600 :display_theme="display_theme" :first_focus="currentFocus" :setFocus="setFocus" ref="circlepack"></CirclePack>
-        </div>
-      </i-col>
-      <i-col span="11">
-        <div id="detail">
-          <div id="intro-card">
-            <p id="intro-title">{{currentFocus[currentFocus.length - 1]}} <Icon type="ios-arrow-forward"></Icon> </p>
-            <p id="intro-desc">
-              描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述
-            </p>
-          </div>
-          <div id="choices">
-            <button :style="{color: btn1_color}" @click="setState('business')">业务</button>
-            <button :style="{color: btn2_color}" @click="setState('role')">角色</button>
-          </div>
-          <div id="roles" v-if="currentState === 'role'">
-            <Collapse>
-              <Panel name="1">
-                史蒂夫·乔布斯
-                <p slot="content">史蒂夫·乔布斯（Steve Jobs），1955年2月24日生于美国加利福尼亚州旧金山，美国发明家、企业家、美国苹果公司联合创办人。</p>
-              </Panel>
-              <Panel name="2">
-                斯蒂夫·盖瑞·沃兹尼亚克
-                <p slot="content">斯蒂夫·盖瑞·沃兹尼亚克（Stephen Gary Wozniak），美国电脑工程师，曾与史蒂夫·乔布斯合伙创立苹果电脑（今之苹果公司）。斯蒂夫·盖瑞·沃兹尼亚克曾就读于美国科罗拉多大学，后转学入美国著名高等学府加州大学伯克利分校（UC Berkeley）并获得电机工程及计算机（EECS）本科学位（1987年）。</p>
-              </Panel>
-              <Panel name="3">
-                乔纳森·伊夫
-                <p slot="content">乔纳森·伊夫是一位工业设计师，现任Apple公司设计师兼资深副总裁，英国爵士。他曾参与设计了iPod，iMac，iPhone，iPad等众多苹果产品。除了乔布斯，他是对苹果那些著名的产品最有影响力的人。</p>
-              </Panel>
-            </Collapse>
-          </div>
-          <div id="business" v-else>
-            <ul id="detailpage-decision-list">
-              <li v-for="(item,i) in menuItems" @click="jumpTo(item)">
-                {{item}}
-                <Icon type="ios-arrow-forward"/>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </i-col>
-    </Row>
+    <div id="circle-pack">
+      <CirclePack width=600 height=600 svg_height="100%" svg_width="100%" :display_theme="display_theme" :first_focus="currentFocus" :setFocus="setFocus" ref="circlepack"></CirclePack>
+    </div>
+    <div id="tool-bar">
+      <ToolSideBar :showMenu="showMenu" :reset="jumpTo" :locate="locate" :showSearch="showSearch"></ToolSideBar>
+    </div>
+    <div id="detail">
+      <div id="intro-card">
+        <p id="intro-title">{{currentFocus[currentFocus.length - 1]}} <Icon type="ios-arrow-forward"></Icon> </p>
+        <p id="intro-desc">
+          描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述
+        </p>
+      </div>
+      <div id="choices">
+        <button :style="{color: btn1_color}" @click="setState('business')">业务</button>
+        <button :style="{color: btn2_color}" @click="setState('role')">角色</button>
+      </div>
+      <div id="roles" v-if="currentState === 'role'">
+        <Collapse>
+          <Panel name="1">
+            史蒂夫·乔布斯
+            <p slot="content">史蒂夫·乔布斯（Steve Jobs），1955年2月24日生于美国加利福尼亚州旧金山，美国发明家、企业家、美国苹果公司联合创办人。</p>
+          </Panel>
+          <Panel name="2">
+            斯蒂夫·盖瑞·沃兹尼亚克
+            <p slot="content">斯蒂夫·盖瑞·沃兹尼亚克（Stephen Gary Wozniak），美国电脑工程师，曾与史蒂夫·乔布斯合伙创立苹果电脑（今之苹果公司）。斯蒂夫·盖瑞·沃兹尼亚克曾就读于美国科罗拉多大学，后转学入美国著名高等学府加州大学伯克利分校（UC Berkeley）并获得电机工程及计算机（EECS）本科学位（1987年）。</p>
+          </Panel>
+          <Panel name="3">
+            乔纳森·伊夫
+            <p slot="content">乔纳森·伊夫是一位工业设计师，现任Apple公司设计师兼资深副总裁，英国爵士。他曾参与设计了iPod，iMac，iPhone，iPad等众多苹果产品。除了乔布斯，他是对苹果那些著名的产品最有影响力的人。</p>
+          </Panel>
+        </Collapse>
+      </div>
+      <div id="business" v-else>
+        <ul id="detailpage-decision-list">
+          <li v-for="(item,i) in menuItems" @click="jumpTo(item)">
+            {{item}}
+            <Icon type="ios-arrow-forward"/>
+          </li>
+        </ul>
+      </div>
+    </div>
     <SideMenu ref="sidemenu" :setFocus="setFocus" :jumpTo="jumpTo"></SideMenu>
+    <SideSearch ref="sidesearch" :jumpTo="jumpTo"></SideSearch>
+    <ul id="bottom-navi">
+      <li v-for="(item,i) in currentFocus.slice(0, currentFocus.length - 1)" @click="navi(item, i)">
+        {{item}}<Icon type="ios-arrow-forward"></Icon>
+      </li>
+      <li>{{currentFocus[currentFocus.length - 1]}}</li>
+    </ul>
+    <div id="school"></div>
+    <div id="time">
+      <p>{{ this.dateStr }}</p>
+      <p>{{ this.timeStr }}</p>
+    </div>
   </div>
 </template>
 
@@ -56,6 +62,7 @@
 import CirclePack from "../components/CirclePack";
 import ToolSideBar from "../components/ToolSideBar";
 import SideMenu from "../components/SideMenu";
+import SideSearch from "../components/SideSearch";
 
 export default {
   name: "DetailPage",
@@ -64,10 +71,15 @@ export default {
       display_theme: "1",
       currentState: "role",
       currentFocus: ['校园业务'],
-      bar_or_menu: true
+      bar_or_menu: true,
+      dateStr: null,
+      timeStr: null,
+      timer: null,
+      options: [],
+      list: []
     }
   },
-  components: {SideMenu, ToolSideBar, CirclePack},
+  components: {SideSearch, SideMenu, ToolSideBar, CirclePack},
   methods: {
     setState(state){
       this.currentState = state;
@@ -78,8 +90,53 @@ export default {
     showMenu(){
       this.$refs.sidemenu.showMenu();
     },
+    showSearch(){
+      this.$refs.sidesearch.showSearch();
+    },
     jumpTo(name){
       this.$refs.circlepack.jumpTo(name);
+    },
+    navi(item, index){
+      this.setFocus(this.currentFocus.slice(0, index + 1));
+      this.jumpTo(item);
+    },
+    locate(){
+      this.$refs.circlepack.locate();
+    },
+    getDateStr() {
+      let date = new Date();
+      let day;
+      switch (date.getDay()) {
+        case 0:
+          day = "日";
+          break;
+        case 1:
+          day = '一'
+          break
+        case 2:
+          day = '二'
+          break
+        case 3:
+          day = '三'
+          break
+        case 4:
+          day = '四'
+          break
+        case 5:
+          day = '五'
+          break
+        case 6:
+          day = '六'
+
+      }
+      let minutes = date.getMinutes();
+      let seconds = date.getSeconds();
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      this.dateStr = date.getFullYear() + "年" +
+        date.getMonth() + "月" +
+        date.getDate() + "日    星期" + day;
+      this.timeStr = date.getHours() + ":" + minutes + ":" + seconds;
     }
   },
   computed: {
@@ -107,14 +164,21 @@ export default {
     if (this.$route.params.first_focus){
       this.currentFocus = this.$route.params.first_focus;
       this.display_theme = "2";
-    }
+    };
+    let self = this;
+    this.timer = setInterval(function () {
+      self.getDateStr();
+    }, 1000);
   },
   beforeCreate(){
     // 添加背景色
     document.querySelector('body').setAttribute('style', 'background-color:black')
   },
   beforeDestroy(){
-    document.querySelector('body').setAttribute('style', '')
+    document.querySelector('body').setAttribute('style', '');
+    if (this.timer){
+      clearInterval(this.timer);
+    }
   },
 }
 </script>
@@ -124,26 +188,56 @@ export default {
   height: 100%;
   background: black;
 }
-#detail-page .ivu-row, .ivu-col{
-  height: 100%;
+
+#time {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  color: white;
+}
+
+#school {
+  height: 8%;
+  width: 16%;
+  background-image: url("/static/school.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 10px;
+  top: 0;
 }
 
 #circle-pack {
   display: flex;
   align-items: center;
   height: 100%;
+  width: 100%;
+}
+
+#tool-bar {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 20px;
+}
+
+#detail {
+  position: absolute;
+  height: 100%;
+  width: 28%;
+  top: 15%;
+  right: 0;
 }
 
 #intro-card {
   background: rgb(41, 41, 47);
-  height: 40%;
-  width: 80%;
-  margin-left: 10%;
-  margin-top: 10%;
+  height: 30%;
+  width: 90%;
+  margin-left: 5%;
   color: white;
 }
 
-#intro-car i{
+#intro-card i{
   color: white;
 }
 
@@ -157,7 +251,7 @@ export default {
 
 #intro-desc {
   width: 90%;
-  height: 65%;
+  height: 75%;
   display: block;
   margin-left: 5%;
   margin-top: 5%;
@@ -166,10 +260,10 @@ export default {
 }
 
 #choices {
-  width: 80%;
-  margin-left: 10%;
+  width: 90%;
+  margin-left: 5%;
   margin-top: 0;
-  padding: 20px 0;
+  padding: 0 0 20px 0;
   background: rgb(41, 41, 47);
   display: grid;
   grid-template-columns: 50% 50%;
@@ -183,9 +277,9 @@ export default {
 }
 
 #roles {
-  width: 80%;
-  margin-left: 10%;
-  margin-top: 10%;
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 5%;
 }
 
 #roles .ivu-collapse {
@@ -211,8 +305,8 @@ export default {
 
 #detailpage-decision-list {
   list-style: none;
-  width: 80%;
-  margin-left: 10%;
+  width: 90%;
+  margin-left: 5%;
 }
 
 #detailpage-decision-list li {
@@ -227,5 +321,28 @@ export default {
 
 #detailpage-decision-list i {
   float: right;
+}
+
+#bottom-navi {
+  width: 50%;
+  height: 32px;
+  background: #37373e;
+  position: absolute;
+  bottom: 20px;
+  left: 25%;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+#bottom-navi li,i {
+  color: rgb(142,142,146);
+  cursor: pointer;
+}
+
+#bottom-navi li:last-child {
+  color: white;
 }
 </style>
