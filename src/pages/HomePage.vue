@@ -19,7 +19,7 @@
           <div class="box" id="old-school">
             <span class="triangle left"></span>
             <div class="pop-card">
-              <p class="title">老校友代表座谈会</p>
+              <p class="title">老校友代表座谈会<Icon type="md-close" @click="hidePops"></Icon></p>
               <p class="sub-title">办公楼二层东接待室</p>
               <Carousel loop>
                 <CarouselItem>
@@ -42,7 +42,7 @@
           <div class="box" id="ai">
             <span class="triangle left"></span>
             <div slot="content" class="pop-card">
-              <p class="title">人工智能实验室</p>
+              <p class="title">人工智能实验室<Icon type="md-close" @click="hidePops"></Icon> </p>
               <p class="sub-title">实验楼A座一层大厅103&nbsp&nbsp2010年建成&nbsp&nbsp356平方米</p>
               <Carousel loop>
                 <CarouselItem>
@@ -161,22 +161,30 @@ export default {
 
       let os = svg.select("#old-school-icon");
       let ai = svg.select("#ai-icon");
+      let osText = svg.select("#old-school-text");
+      let aiText = svg.select("#ai-text");
       os.node().style.cursor = "pointer";
       ai.node().style.cursor = "pointer";
-      os.on("click", function (event) {
+      osText.node().style.cursor = "pointer";
+      aiText.node().style.cursor = "pointer";
+      let os_click = function (event) {
         event.stopPropagation();
         let pop = document.getElementById("old-school");
         pop.style.display = "block";
         pop.style.left = event.x + "px";
         pop.style.top = (event.y - 275) + "px";
-      });
-      ai.on("click", function (event){
+      };
+      let ai_click = function (event){
         event.stopPropagation();
         let pop = document.getElementById("ai");
         pop.style.display = "block";
         pop.style.left = event.x + "px";
         pop.style.top = (event.y - 275) + "px";
-      });
+      }
+      os.on("click", os_click);
+      osText.on("click", os_click);
+      ai.on("click", ai_click);
+      aiText.on("click", ai_click);
     })
   },
 beforeDestroy()
@@ -201,6 +209,7 @@ beforeDestroy()
   background-size: contain;
   background-repeat: no-repeat;
   background-position: 10%;
+  margin-top: 14px;
 }
 
 #homepage .ivu-col {
@@ -209,7 +218,6 @@ beforeDestroy()
 
 #homepage-map {
   background-color: black;
-  /*background-image: url("/static/map.png");*/
   background-size: contain;
   background-repeat: no-repeat;
   height: 100%;
@@ -231,6 +239,13 @@ beforeDestroy()
 .title {
   font-size: 200%;
   margin-top: 10%;
+}
+
+.title > i {
+  float: right;
+  margin-right: 10px;
+  margin-top: 5px;
+  cursor: pointer;
 }
 
 .sub-title {

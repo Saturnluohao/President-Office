@@ -266,7 +266,7 @@ export default {
           if (self.setFocus) {
             self.setFocus(self.getPath(data));
           }
-          return (self.zoom(event), event.stopPropagation());
+          self.zoom(event);
         })
         .on('contextmenu', function (event, d) {
           event.preventDefault();
@@ -319,6 +319,7 @@ export default {
           this.labels.style("display", d => d.parent === root || d === root ? 'inline' : 'none');
           break;
         case "2":
+          this.zoomTo([root.x, root.y, root.r * 2.4]);
           this.jumpTo(this.first_focus);
           break;
       }
@@ -336,7 +337,6 @@ export default {
         .attr("stroke-width", 3)
         .attr("stroke", "#ffffff");
       this.focus = this.focus_selection.datum();
-      this.zoomTo([this.focus.x, this.focus.y, this.focus.r * 2.2]);
 
       this.circles.style("display", (d) =>
         d.depth <= this.focus.depth ||

@@ -12,7 +12,8 @@
         </svg>
       </li>
       <li>
-        <Icon type="ios-search" size="32" @click="showSearch"></Icon>
+        <Icon type="ios-search" size="32" @click="showSearchBox" v-if="searchFlag"></Icon>
+        <SideSearch ref="sidesearch" :jump-to="jumpTo" :toggle-search="hideSearchBox" v-else></SideSearch>
       </li>
     </ul>
     <div @click="home" id="home">
@@ -22,13 +23,20 @@
 </template>
 
 <script>
+import SideSearch from "./SideSearch";
 export default {
   name: "ToolSideBar",
+  components: {SideSearch},
   props:{
     showMenu: Function,
     reset: Function,
     locate: Function,
-    showSearch: Function
+    jumpTo: Function
+  },
+  data(){
+    return {
+      searchFlag: true
+    }
   },
   methods: {
     toSelected() {
@@ -36,7 +44,18 @@ export default {
     },
     home(){
       this.$router.push('/');
+    },
+    showSearchBox(event){
+      this.searchFlag = false;
+      event.stopPropagation();
+    },
+    hideSearchBox(){
+      this.searchFlag = true;
     }
+  },
+  mounted() {
+    // let search = $("#tool-list li:nth-child(3)")[0];
+    // this.$refs.sidesearch.setPosition(search.offsetTop);
   }
 }
 </script>
@@ -55,7 +74,7 @@ export default {
 
 #tool-list {
   list-style: none;
-  margin-left: 30%;
+  margin-left: 10px;
 }
 
 #tool-list li {
@@ -70,6 +89,6 @@ export default {
 #home {
   position: absolute;
   bottom: 5%;
-  margin-left: 30%;
+  margin-left: 10px;
 }
 </style>

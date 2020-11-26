@@ -3,10 +3,13 @@
     <div id="homepage-side-top" v-if="this.$store.state.circle_pack_data">
       <ul id="homepage-decision-list">
         <li>决策事项
-          <Icon type="md-add" size="24" @click="addDecision"></Icon>
+          <span>管理</span>
         </li>
         <li v-for="(item,i) in menuItems" @click="toDecision(item)">{{item}}
-          <Icon type="ios-arrow-forward"/>
+          <img src="/static/arrow.svg">
+        </li>
+        <li @click="addDecision">
+          <Icon type="md-add" color="white" size="16"></Icon>
         </li>
       </ul>
     </div>
@@ -22,7 +25,7 @@
       </Select>
     </div>
     <div id="thumbnail">
-      <CirclePack width=100 height=100 svg_height="250" svg_width="250" display_theme=0 root_font_size=8
+      <CirclePack width=100 height=100 svg_height="100%" svg_width="100%" display_theme=0 root_font_size=8
                   children_font_size=4></CirclePack>
     </div>
 <!--    <div id="expand-icon">-->
@@ -79,11 +82,6 @@ export default {
         }
       }
     },
-    expand(){
-      this.$router.push({
-        name: 'detail'
-      });
-    },
     addDecision(){
       this.setState('newDecision');
     },
@@ -119,6 +117,10 @@ export default {
 </script>
 
 <style scoped>
+#homepage-side {
+  margin-top: 30px;
+}
+
 #homepage-decision-list {
   list-style: none;
   width: 70%;
@@ -128,21 +130,36 @@ export default {
 #homepage-decision-list li {
   border: 1px solid black;
   border-radius: 5px;
-  padding: 15px;
+  padding: 8px 10px 8px 15px;
   margin: 10px 0;
   text-align: left;
   color: white;
   background: rgb(55, 55, 62);
+  cursor: pointer;
 }
 
 #homepage-decision-list li:first-child {
   padding-left: 0;
+  padding-right: 0;
   border: none;
   background: rgb(41, 41, 47);
   font-size: 150%;
+  cursor: default;
 }
 
-#homepage-decision-list i {
+#homepage-decision-list li:first-child>span{
+  padding-top: 5px;
+  font-size: 67%;
+  float: right;
+  cursor: pointer;
+}
+
+#homepage-decision-list li:last-child {
+  text-align: center;
+}
+
+#homepage-decision-list img {
+  width: 16px;
   float: right;
 }
 
@@ -183,6 +200,11 @@ export default {
   width: 70%;
   margin-left: 15%;
   margin-top: 5%;
+}
+
+#thumbnail>div {
+  width: 90%;
+  margin-left: 10%;
 }
 
 /*#expand-icon i {*/

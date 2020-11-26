@@ -13,6 +13,7 @@ require('../mock/index.js');
 
 Vue.use(ViewUI)
 Vue.config.productionTip = false
+Vue.config.silent = true;
 
 /* eslint-disable no-new */
 new Vue({

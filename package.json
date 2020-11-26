@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "d3": "^6.2.0",
+    "jquery": "^3.5.1",
     "view-design": "^4.4.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",

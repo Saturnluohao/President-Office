@@ -4,11 +4,11 @@
       <CirclePack width=600 height=600 svg_height="100%" svg_width="100%" :display_theme="display_theme" :first_focus="currentFocus" :setFocus="setFocus" ref="circlepack"></CirclePack>
     </div>
     <div id="tool-bar">
-      <ToolSideBar :showMenu="showMenu" :reset="jumpTo" :locate="locate" :showSearch="showSearch"></ToolSideBar>
+      <ToolSideBar ref=sidebar :showMenu="showMenu" :reset="jumpTo" :locate="locate" :jumpTo="jumpTo"></ToolSideBar>
     </div>
     <div id="detail">
       <div id="intro-card">
-        <p id="intro-title">{{currentFocus[currentFocus.length - 1]}} <Icon type="ios-arrow-forward"></Icon> </p>
+        <p id="intro-title">{{currentFocus[currentFocus.length - 1]}} </p>
         <p id="intro-desc">
           描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述
         </p>
@@ -37,13 +37,12 @@
         <ul id="detailpage-decision-list">
           <li v-for="(item,i) in menuItems" @click="jumpTo(item)">
             {{item}}
-            <Icon type="ios-arrow-forward"/>
+            <img src="/static/arrow.svg"/>
           </li>
         </ul>
       </div>
     </div>
     <SideMenu ref="sidemenu" :setFocus="setFocus" :jumpTo="jumpTo"></SideMenu>
-    <SideSearch ref="sidesearch" :jumpTo="jumpTo"></SideSearch>
     <ul id="bottom-navi">
       <li v-for="(item,i) in currentFocus.slice(0, currentFocus.length - 1)" @click="navi(item, i)">
         {{item}}<Icon type="ios-arrow-forward"></Icon>
@@ -63,6 +62,8 @@ import CirclePack from "../components/CirclePack";
 import ToolSideBar from "../components/ToolSideBar";
 import SideMenu from "../components/SideMenu";
 import SideSearch from "../components/SideSearch";
+
+import $ from 'jquery';
 
 export default {
   name: "DetailPage",
@@ -89,9 +90,6 @@ export default {
     },
     showMenu(){
       this.$refs.sidemenu.showMenu();
-    },
-    showSearch(){
-      this.$refs.sidesearch.showSearch();
     },
     jumpTo(name){
       this.$refs.circlepack.jumpTo(name);
@@ -169,6 +167,9 @@ export default {
     this.timer = setInterval(function () {
       self.getDateStr();
     }, 1000);
+    document.onclick = function (event){
+      self.$refs.sidebar.hideSearchBox();
+    }
   },
   beforeCreate(){
     // 添加背景色
@@ -176,6 +177,7 @@ export default {
   },
   beforeDestroy(){
     document.querySelector('body').setAttribute('style', '');
+    document.onclick = null;
     if (this.timer){
       clearInterval(this.timer);
     }
@@ -203,8 +205,8 @@ export default {
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
-  left: 10px;
-  top: 0;
+  left: 14px;
+  top: 14px;
 }
 
 #circle-pack {
@@ -223,8 +225,8 @@ export default {
 
 #detail {
   position: absolute;
-  height: 100%;
-  width: 28%;
+  /*height: 100%;*/
+  width: 24%;
   top: 15%;
   right: 0;
 }
@@ -263,7 +265,7 @@ export default {
   width: 90%;
   margin-left: 5%;
   margin-top: 0;
-  padding: 0 0 20px 0;
+  padding: 10px 0;
   background: rgb(41, 41, 47);
   display: grid;
   grid-template-columns: 50% 50%;
@@ -316,10 +318,12 @@ export default {
   margin: 10px 0;
   text-align: left;
   color: white;
-  background: rgb(55, 55, 62)
+  background: rgb(55, 55, 62);
+  cursor: pointer;
 }
 
-#detailpage-decision-list i {
+#detailpage-decision-list img {
+  width: 16px;
   float: right;
 }
 
