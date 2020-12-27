@@ -19,12 +19,16 @@ export default {
     display_theme: String,
     root_font_size: Number,
     children_font_size: Number,
-    setFocus: Function
+    setFocus: Function,
+    showInfoCard: Function
   },
   data() {
     return {
+      vargroup: Object,
       circle_group: Object,
-      line_group: Object,
+      group1: null,
+      group2: null,
+      defs: Object,
       relations: Map,
       circles: Object,
       labels: Object,
@@ -32,14 +36,19 @@ export default {
       view: Object,
       focus: Object,
       focus_selection: null,
-      color: ["#2A427A", "#2D4A88", "#1E3B7A", "#183474", "#132A62", "#091E54", "#091A44", "#000000"]
+      currentRelations: [],
+      color: ["#2A427A", "#2D4A88", "#1E3B7A", "#183474", "#132A62", "#091E54", "#091A44", "#000000"],
+      state: "nav",
+      funcId: Number
     };
   },
   methods: {
     pack: function (data) {
       let self = this;
+      let id = 0;
 
       function construct_circlepack(hierarchy) {
+        hierarchy.id = id++;
         if (hierarchy.height == 0) {
           return;
         }
@@ -52,20 +61,29 @@ export default {
         let sin_value = Math.sin(Math.PI / children_length);
         let sr = hierarchy.r;
         let cr = children_length === 1 ? sr / 2 : (sr * sin_value) / (1 + sin_value);
+        let angle_offset = children_length === 1 ? -Math.PI / 2 : 0;
         for (let i = 0; i < children_length; i++) {
           hierarchy.children[i].r = cr;
           hierarchy.children[i].x =
             hierarchy.x +
-            Math.cos((2 * i * Math.PI) / children_length) * (sr - cr);
+            Math.cos((2 * i * Math.PI) / children_length + angle_offset) * (sr - cr);
           hierarchy.children[i].y =
             hierarchy.y -
-            Math.sin((2 * i * Math.PI) / children_length) * (sr - cr);
+            Math.sin((2 * i * Math.PI) / children_length + angle_offset) * (sr - cr);
           construct_circlepack(hierarchy.children[i]);
         }
         return hierarchy;
       }
 
       return construct_circlepack(d3.hierarchy(data));
+    },
+
+    addKV(selection, k, v){
+      let node = selection.node();
+      if (!node.__data__){
+        node.__data__ = {}
+      }
+      node.__data__[k] = v;
     },
 
     //从Transform字符串中获取Transform对象
@@ -92,18 +110,79 @@ export default {
         .translate(translation[0], translation[1])
         .scale(scale);
     },
+    drawLine(option, groups){
+      let direction = option.direction, x1 = option.pos[0], y1 = option.pos[1], x2 = option.pos[2], y2 = option.pos[3];
+      let factor = direction > 90 && direction < 270 ? 4 : -4;
+      let angle = (direction * Math.PI) / 180;
+      let text_angle = direction > 90 && direction < 270 ? 180 - direction : -direction;
+      let text_x = (x1 + x2) / 2 + Math.sin(angle) * factor,
+          text_y = (y1 + y2) / 2 + Math.cos(angle) * factor;
+      let text = groups.tg
+        .append("text")
+        .attr("transform", `translate(${text_x}, ${text_y})rotate(${text_angle})`)
+        .attr("text-anchor", "middle")
+        .attr("fill", option.textColor ? option.textColor : "white")
+        .text(option.text)
+        .attr('id', option.id)
+        .style("font-size", option.fontSize ? option.fontSize : "8px");
+      let line = groups.lg
+        .append("line")
+        .attr("id", option.id)
+        .attr("x1", x1)
+        .attr("y1", y1)
+        .attr("x2", x2)
+        .attr("y2", y2)
+        .attr("stroke", option.color ? option.color : "white")
+        .attr("stroke-width", option.width ? option.width : 1);
+      this.addKV(line, "v1", option.v1);
+      this.addKV(line, "v2", option.v2);
+      this.addKV(text, "v1", option.v1);
+      this.addKV(text, "v2", option.v2);
+
+      return line;
+    },
+
+    drawRelation(option, groups){
+      function getCordByRatio(a, b, ratio){
+        return a + ratio * (b - a);
+      };
+      let c1 = this.circles.filter(d => d.id === option.v1);
+      let c2 = groups.cg.selectAll('circle').filter(d => d.v2 === option.v2);
+
+      let transform1 = this.getTransform(c1), transform2 = this.getTransform(c2);
+      let x1 = transform1.x, y1 = transform1.y, x2 = transform2.x, y2 = transform2.y;
+      let r1 = c1.attr("r"), r2 = c2.attr("r"), dis = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+      let line_x1 = getCordByRatio(x1, x2, r1 / dis), line_y1 = getCordByRatio(y1, y2, r1 / dis);
+      let line_x2 = getCordByRatio(x1, x2, 1 - r2 / dis), line_y2 = getCordByRatio(y1, y2, 1 - r2 / dis);
+      let direction = (Math.atan2(y1- y2, x2 - x1) * 180 / Math.PI + 180) % 180;
+
+      this.drawLine({
+        pos: [line_x1, line_y1, line_x2, line_y2],
+        direction: direction,
+        width: 0.5,
+        fontSize: "6px",
+        text: option.text,
+        v1: option.v1,
+        v2: option.v2
+      }, groups)
+    },
 
     //生成关系
-    drawRelation: function (c, direction, radius, distance) {
+    generateRelation(option, groups) {
+      let direction = option.direction,
+          distance = option.distance,
+          radius = option.radius;
+      let c = this.circles.filter(d => d.id === option.v1);
       let transform = this.getTransform(c);
-      let x1 = transform.x;
-      let y1 = transform.y;
-      let r = c.datum().r;
-
+      let x1 = transform.x, y1 = transform.y, r = +c.attr("r");
+      let angle = (option.direction * Math.PI) / 180;
       let x2 =
-        Math.cos((direction * Math.PI) / 180) * (r + distance + radius) + x1;
+        Math.cos(angle) * (r + distance + radius) + x1;
       let y2 =
-        -Math.sin((direction * Math.PI) / 180) * (r + distance + radius) + y1;
+        -Math.sin(angle) * (r + distance + radius) + y1;
+
+      let line_x1 = x1 + Math.cos(angle) * r, line_y1 = y1 - Math.sin(angle) * r;
+      let line_x2 = x1 + Math.cos(angle) * (r + distance), line_y2 = y1 - Math.sin(angle) * (r + distance);
 
       // function dragStarted() {
       //   // d3.select(this).raise();
@@ -121,40 +200,196 @@ export default {
       //   console.label("Event is " + event);
       // }
 
-      let new_line = this.line_group
-        .append("line")
-        .attr("x1", x1)
-        .attr("y1", y1)
-        .attr("x2", x2)
-        .attr("y2", y2)
-        .attr("stroke", "red")
-        .attr("stroke-width", 2);
-      this.circle_group.node().append(c.node());
-      let new_circle = this.circle_group
+      this.drawLine({
+        pos: [line_x1, line_y1, line_x2, line_y2],
+        direction: direction,
+        width: option.width,
+        v1: option.v1,
+        v2: option.v2
+      }, groups);
+
+      let new_circle = groups.cg
         .append("circle")
-        .attr("transform", d3.zoomIdentity.translate(x2, y2))
-        .attr("fill", "red")
+        .attr("transform", `translate(${x2},${y2})`)
+        .attr("fill", option.fill ? option.fill : "red")
         .attr("r", radius)
-        .call(d3.drag().on("start", dragStarted).on("drag", dragged))
+        .attr("stroke", option.stroke ? option.stroke : "none")
+        .attr("stroke-width", option.strokeWidth ? option.strokeWidth : "1");
+        // .call(d3.drag().on("start", dragStarted).on("drag", dragged))
       // .on("end", dragEnded);
-      this.relations.set(new_circle, new_line);
+
+      this.addKV(new_circle, "v2", option.v2);
+      this.addKV(new_circle, "v1", option.v1);
+      new_circle.on(option.listener.event, option.listener.callback);
     },
 
-    getDepth(json) {
-      let depth = 0;
+    highlight(event, data){
+      let highlightId = data.v2;
+      this.group1.lg.selectAll('line').style("opacity", d => d.v2 === highlightId ? 1 : 0.1);
+      this.group1.cg.selectAll('circle').style("opacity", d => d.v2 === highlightId ? 1 : 0.1);
+      this.group1.tg.selectAll('text').style("opacity", d => d.v2 === highlightId ? 1 : 0.1);
 
-      function traverse(data, self_depth) {
-        self_depth += 1;
-        depth = self_depth > depth ? self_depth : depth;
-        if (data.children) {
-          for (let i = 0; i < data.children.length; i++) {
-            traverse(data.children[i], self_depth);
-          }
-        }
+      this.circles.style('opacity', 1);
+      // this.labels.style('opacity', 1);
+
+      this.showInfoCard(highlightId);
+    },
+
+    addCandidate(event, data) {
+      event.preventDefault();
+      let to_add = this.$store.getters.getCandidate(data.v2);
+      to_add.v1 = this.funcId;
+      this.$store.commit('addStudent', to_add);
+      this.$store.commit('removeCandidate', data.v2);
+
+      this.drawStudents();
+      this.drawCandidates();
+    },
+
+    drawStudents(){
+      let self = this;
+      if (this.group1){
+        Object.values(this.group1).forEach(d => d.remove());
       }
+      this.group1 = {
+        lg: this.vargroup.append('g'),
+        tg: this.vargroup.append('g'),
+        cg: this.vargroup.append('g')
+      }
+      if (this.$store.getters.hasStudents){
+        self.generateGraph(this.$store.state.student_data, {
+          event: "click",
+          callback: self.highlight
+        }, self.group1, true);
+      }else{
+        axios.get('/relations').then(res => {
+          self.$store.state.student_data = res.data;
+          self.generateGraph(res.data, {
+            event: "click",
+            callback: self.highlight
+          }, self.group1);
+        });
+      }
+      self.state = "fun";
+    },
 
-      traverse(json, 0);
-      return depth;
+    drawCandidates(){
+      let self = this;
+      if (this.group2){
+        Object.values(this.group2).forEach(d => d.remove());
+      }
+      this.group2 = {
+        lg: this.vargroup.append('g'),
+        tg: this.vargroup.append('g'),
+        cg: this.vargroup.append('g')
+      }
+      if (this.$store.getters.hasCandidates){
+        self.generateGraph(this.$store.state.candidate_data, {
+          event: "contextmenu",
+          callback: self.addCandidate
+        }, self.group2);
+      }else{
+        axios.get('/extra_candidates').then(res => {
+          self.$store.state.candidate_data = res.data;
+          self.generateGraph(res.data, {
+            event: "contextmenu",
+            callback: self.addCandidate
+          }, self.group2);
+        });
+      }
+    },
+
+    toggleCandidate(event, data){
+      if (!this.group2){
+        this.drawCandidates();
+      }else{
+        Object.values(this.group2).forEach(s => s.remove());
+        this.group2 = null;
+      }
+    },
+
+    drawGraph(relations, groups){
+      let self = this;
+      relations.forEach(relation => {
+        if (relation.type === 1){
+          self.drawRelation(relation, groups);
+        }else if (relation.type === 2){
+          self.generateRelation(relation, groups);
+        }
+      })
+    },
+
+    generateGraph(relations, listener, groups, notZoom){
+      let cnt = 0, relCnt = 0; //新增圆数量
+      let currentAngle = 0, angleDelta;
+      let self = this, highlights = [], funcCircleId = 0;
+      relations.forEach(relation => cnt += (relation.type - 1));
+      angleDelta = 360 / cnt;
+
+      let x = 0, y = 0, r = 0;
+
+      this.circles.style("display", "inline");
+      this.labels.style("display", "inline");
+      this.labels.style("font-size", "50%");
+
+      relations.forEach(relation => {
+        if (relation.type === 2){
+          relation.direction = currentAngle;
+          relation.distance = 20;
+          relation.radius = 20;
+          relation.width = 2;
+          self.defs.append("pattern")
+            .attr("id", "icon" + relation.v2)
+            .attr("patternContentUnits", "objectBoundingBox")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .append("image")
+            .attr("xlink:href", "/static/image/student_" + relation.v2 + ".png")
+            .attr("width", 1)
+            .attr("height", 1);
+          relation.fill = "url(#icon" + relation.v2 + ")";
+          relation.stroke = "#ffffff";
+          relation.strokeWidth = 1;
+          relation.listener = listener;
+
+          currentAngle += angleDelta;
+          funcCircleId = relation.v1;
+
+          relation.onclick = onclick;
+
+          self.circles.filter(d => d.id === relation.v1)
+            .attr("stroke", "#ffffff")
+            .attr("stroke-width", "2");
+        }else{
+          highlights.push(relation.v1);
+          let c = self.circles.filter(d => d.id === relation.v1);
+          x += c.datum().x;
+          y += c.datum().y;
+          relCnt++;
+
+          relation.text = "获得";
+
+          self.circles.filter(d => d.parent && d.parent.id === relation.v1).style("display", "none");
+          self.labels.filter(d => d.parent && d.parent.id === relation.v1).style("display", "none");
+        }
+      });
+      highlights.push(funcCircleId);
+
+      if (relCnt !== 0 && !notZoom) {
+        x = x / relCnt;
+        y = y / relCnt;
+        r = this.focus.r * 8;
+        this.focus = {
+          x: x,
+          y: y,
+          r: r
+        };
+        this.specialZoom(this.drawGraph, relations, groups);
+        this.circles.style("opacity", d => highlights.indexOf(d.id) < 0 ? 0.05 : 1)
+        this.labels.style("opacity", d => highlights.indexOf(d.id) < 0 ? 0.05 : 1);
+      }else{
+        this.drawGraph(relations, groups);
+      }
     },
 
     //聚焦到点击的园
@@ -172,8 +407,31 @@ export default {
       this.circles.attr("r", (d) => d.r * k);
     },
 
+    specialZoom(callback, arg1, arg2){
+      let self = this;
+      const transition = this.svg
+        .transition()
+        .duration(750)
+        .tween("zoom", () => {
+          const i = d3.interpolateZoom(this.view, [
+            self.focus.x,
+            self.focus.y,
+            self.focus.r * 2.4,
+          ]);
+          return (t) => this.zoomTo(i(t));
+        })
+        .on("end", function () {
+          if (callback){
+            callback(arg1, arg2);
+          }
+        });
+
+      this.labels
+        .transition(transition);
+    },
+
     //文本的显示与隐藏
-    zoom(event) {
+    zoom(event, callback, arg) {
       let self = this;
       const transition = this.svg
         .transition()
@@ -185,10 +443,22 @@ export default {
             self.focus.r * 2.4,
           ]);
           return (t) => this.zoomTo(i(t));
+        })
+        .on("end", function () {
+          let focus_label = self.labels.filter(d => d === self.focus);
+          if (focus_label.datum().children && focus_label.datum().children.length === 2) {
+            focus_label.transition().duration(500).attr("transform", (d) => `translate(0,-150)`);
+          } else if (focus_label.datum().children && focus_label.datum().children.length === 1) {
+            focus_label.transition().duration(500).attr("transform", (d) => `translate(0,-120)`)
+          };
+
+          if (callback){
+            callback(arg);
+          }
         });
       this.labels
         .transition(transition)
-        .style("fill-opacity", d => d.parent === self.focus || d === self.focus ? 1 : 0)
+        // .style("fill-opacity", d => d.parent === self.focus || d === self.focus ? 1 : 0)
         .style("font-size", d => (d === self.focus ? "25px" : "10px"))
         .style('display', d => d.parent === self.focus || d === self.focus ? 'inline' : 'none')
     },
@@ -212,11 +482,7 @@ export default {
       }
 
       const root = this.pack(data); //根节点
-      let circle_pack_group = this.svg.append('g').attr('id', 'circle-pack-group');
-      // let color = d3.scaleLinear()
-      //   .domain([0, this.getDepth(data) - 1])
-      //   .range(["rgb(122,134,168)", "rgb(13,26,71)"])
-      //   .interpolate(d3.interpolateRgb);
+      let circle_pack_group = this.cpgroup = this.svg.append('g').attr('id', 'circle-pack-group');
 
       //设置视窗
       this.svg
@@ -234,7 +500,6 @@ export default {
         .append("g")
         .attr("id", "circles")
         .on("click", (event) => console.log("Clicked: ", event.x, event.y));
-      this.line_group = circle_pack_group.append("g").attr("id", "lines");
 
       //画圆
       let circles = this.circles = this.circle_group
@@ -242,22 +507,35 @@ export default {
         .data(root.descendants())
         .join("circle")
         .attr("fill", (d) => this.color[d.depth])
-        .attr("pointer-events", (d) => (!d.children ? "none" : null))
+        // .attr("pointer-events", (d) => (!d.children ? "none" : null))
         .on("click", function (event, data) {
+          //移除上一次选中的圆的高亮
+          if (self.focus_selection) {
+            self.focus_selection.attr("stroke", null);
+          }
+
+          if (data.data.name === "候选学生"){
+            self.funcId = data.id;
+            self.drawStudents();
+            return;
+          }
+
+          if (self.state === "fun"){
+            if (data.id === 197){
+              self.toggleCandidate();
+            }
+            return;
+          }
+
           if (data !== self.focus) {
             self.focus = data;
             circles.style("display", (d) =>
-              d.depth < self.focus.depth ||
-              d.depth === self.focus.depth ||
+              d.depth <= self.focus.depth ||
               (d.depth === self.focus.depth + 1 && d.parent === self.focus)
                 ? "inline"
                 : "none"
             );
 
-            //移除上一次选中的圆的高亮
-            if (self.focus_selection) {
-              self.focus_selection.attr("stroke", null);
-            }
             self.focus_selection = d3.select(this)
               .attr("stroke-width", 3)
               .attr("stroke", "#ffffff");
@@ -267,15 +545,11 @@ export default {
             self.setFocus(self.getPath(data));
           }
           self.zoom(event);
-        })
-        .on('contextmenu', function (event, d) {
-          event.preventDefault();
-          let clickedCircle = d3.select(this);
-          self.drawRelation(clickedCircle, 60, 50, 10);
+          console.log(data.data.name + ":" + data.id);
         });
 
 
-      this.svg.call(d3.zoom().scaleExtent([0.5, 10]).on("zoom", zoomed));
+      this.svg.call(d3.zoom().scaleExtent([0.01, 100]).on("zoom", zoomed));
 
       //显示文本
       this.labels = circle_pack_group
@@ -289,6 +563,9 @@ export default {
         .attr('fill', 'white')
         .text((d) => d.data.name);
 
+      this.defs = circle_pack_group.append("defs");
+      this.vargroup = circle_pack_group.append('g');
+
       //首次聚焦
       switch (this.display_theme) {
         case "0":
@@ -297,7 +574,7 @@ export default {
           this.labels.filter(d => d === this.focus).style('font-size', '25px');
           this.labels.style("display", d => d.parent === root || d === root ? 'inline' : 'none')
             .style("font-size", d => d.parent === root ? this.children_font_size : this.root_font_size);
-          this.svg.on("click", function(event) {
+          this.svg.on("click", function (event) {
             self.$router.push({
               name: 'detail'
             })
@@ -346,7 +623,7 @@ export default {
       );
       this.zoom({})
     },
-    locate(){
+    locate() {
       this.svg.select("#circle-pack-group").attr('transform', d3.zoomIdentity);
     }
   },
