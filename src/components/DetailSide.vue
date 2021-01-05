@@ -17,7 +17,7 @@
         <ul id="indicator-list">
           <li>选拔指标重要程度</li>
           <li v-for="(item, index) in indicators" class="indicator">{{ item }}
-            <ul>
+            <ul class="ind-level">
               <li v-for="(level, i) in levels" @click="setIndicator(index, i)">
                 <div><p>{{ level }}</p></div>
               </li>
@@ -67,7 +67,8 @@ export default {
   props: {
     currentFocus: Array,
     navi: Function,
-    jumpTo: Function
+    jumpTo: Function,
+    disableCandidate: Function
   },
   data() {
     return {
@@ -89,6 +90,7 @@ export default {
       levels.forEach((level, index) => {
         level.style.background = index === value ? "rgb(48,59,94)" : "none";
       });
+      this.disableCandidate(value % 3);
     },
     showInfoCard(name) {
       this.name = name;
@@ -259,6 +261,10 @@ export default {
 #indicator-list ul li > div p {
   text-align: center;
   width: 100%;
+}
+
+.ind-level>li:nth-child(3) {
+  background: rgb(48,59,94);
 }
 
 #roles {

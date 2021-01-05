@@ -6,7 +6,7 @@
     <div id="tool-bar">
       <ToolSideBar ref=sidebar :showMenu="showMenu" :reset="jumpTo" :locate="locate" :jumpTo="jumpTo"></ToolSideBar>
     </div>
-    <DetailSide :currentFocus="currentFocus" :navi="navi" :jumpTo="jumpTo" ref="side"></DetailSide>
+    <DetailSide :currentFocus="currentFocus" :navi="navi" :jumpTo="jumpTo" ref="side" :disableCandidate="disableCandidate"></DetailSide>
     <SideMenu ref="sidemenu" :setFocus="setFocus" :jumpTo="jumpTo"></SideMenu>
     <ul id="bottom-navi">
       <li v-for="(item,i) in currentFocus.slice(0, currentFocus.length - 1)" @click="navi(item, i)">
@@ -64,6 +64,9 @@ export default {
     },
     showInfoCard(id){
       this.$refs.side.showInfoCard(this.candidates[id]);
+    },
+    disableCandidate(id){
+      this.$refs.circlepack.disableCandidate(id);
     },
     getDateStr() {
       let date = new Date();

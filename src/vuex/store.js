@@ -18,6 +18,9 @@ export default new Vuex.Store({
     },
     removeCandidate(state, id){
       state.candidate_data = state.candidate_data.filter(d => d.v2 != id);
+    },
+    removeStudent(state, id){
+      state.student_data = state.student_data.filter(d => d.v2 != id);
     }
   },
   getters: {
@@ -29,6 +32,9 @@ export default new Vuex.Store({
     },
     hasCandidates: state => {
       return state.candidate_data != null;
+    },
+    dataInited: state => {
+      return state.circle_pack_data != null;
     }
   }
 

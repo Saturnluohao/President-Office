@@ -27,9 +27,8 @@ export default {
   },
   methods: {
     remoteMethod(query) {
-      if (this.list.length === 0) {
-        this.flatten(this.$store.state.circle_pack_data);
-      }
+      this.list = [];
+      this.flatten(this.$store.state.circle_pack_data);
       if (query !== '') {
         const list = this.list.map(item => {
           return {

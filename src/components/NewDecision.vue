@@ -3,51 +3,56 @@
     <ul id="decision-item">
       <li>新建决策项</li>
       <li>决策项标题</li>
-      <li><Input></Input></li>
+      <li><Input v-model="title"></Input></li>
       <li>相关节点</li>
       <li>二级节点</li>
       <li>
         <Select
-          v-model="model11"
+          v-model="level2"
+          @on-select="secondLevel"
           filterable>
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="(item,index) in option2" :value="item" :key="index">{{ item }}</Option>
         </Select>
       </li>
       <li>三级节点</li>
       <li>
         <Select
-          v-model="model11"
+          v-model="level3"
+          @on-select="thirdLevel"
           filterable>
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in option3" :value="item" :key="item">{{ item }}</Option>
         </Select>
       </li>
       <li>四级节点</li>
       <li>
         <Select
-          v-model="model11"
+          v-model="level4"
+          @on-select="forthLevel"
           filterable>
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in option4" :value="item" :key="item">{{ item }}</Option>
         </Select>
       </li>
       <li>五级节点</li>
       <li>
         <Select
-          v-model="model11"
+          v-model="level5"
+          @on-select="fifthLevel"
           filterable>
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in option5" :value="item" :key="item">{{ item }}</Option>
         </Select>
       </li>
       <li>六级节点</li>
       <li>
         <Select
-          v-model="model11"
+          v-model="level6"
+          @on-select="sixthLevel"
           filterable>
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in option6" :value="item" :key="item">{{ item }}</Option>
         </Select>
       </li>
     </ul>
     <div id="button">
-      <button>创建</button>
+      <button @click="addItem">创建</button>
       <button @click="backHome">取消</button>
     </div>
   </div>
@@ -61,44 +66,64 @@ export default {
   },
   data() {
     return {
-      model14: [],
-      loading2: false,
-      options2: [],
-
-      model11: '',
-      cityList: [
-        {
-          value: 'New York',
-          label: 'New York'
-        },
-        {
-          value: 'London',
-          label: 'London'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
-        }
-      ],
-      list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming']
+      title: '',
+      level2: '',
+      level3: '',
+      level4: '',
+      level5: '',
+      level6: '',
+      data: [],
+      option2: [],
+      option3: [],
+      option4: [],
+      option5: [],
+      option6: [],
+      lastLevel: 0,
+      tmpData: null
     }
   },
   methods: {
     backHome(){
       this.setState('home_side');
+    },
+    secondLevel(item){
+      this.data[1] = this.data[0].filter(d => d.name === item.value)[0].children;
+      this.option3 = this.data[1].map(d => d.name);
+      this.lastLevel = 1;
+    },
+    thirdLevel(item){
+      this.data[2] = this.data[1].filter(d => d.name === item.value)[0].children;
+      this.option4 = this.data[2].map(d => d.name);
+      this.lastLevel = 2;
+    },
+    forthLevel(item){
+      this.data[3] = this.data[2].filter(d => d.name === item.value)[0].children;
+      this.option5 = this.data[3].map(d => d.name);
+      this.lastLevel = 3;
+    },
+    fifthLevel(item){
+      this.data[4] = this.data[3].filter(d => d.name === item.value)[0].children;
+      this.option6 = this.data[4].map(d => d.name);
+      this.lastLevel = 4;
+    },
+    sixthLevel(item){
+      this.data[5] = this.data[4].filter(d => d.name === item.value)[0].children;
+      this.lastLevel = 5;
+    },
+    addItem(){
+      let newNode = {
+        name: this.title
+      }
+      this.data[this.lastLevel].push(newNode);
+      this.$store.commit('setData', this.tmpData);
+      this.$Message.success('新建决策项成功: ' + this.title);
     }
+  },
+  mounted() {
+    this.data = new Array(5);
+    this.tmpData = this.$store.state.circle_pack_data;
+    this.data[0] = this.tmpData.children;
+    this.option2 = this.data[0].map(d => d.name);
   }
 }
 </script>

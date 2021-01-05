@@ -78,6 +78,11 @@ export default {
       return construct_circlepack(d3.hierarchy(data));
     },
 
+    disableCandidate(id){
+      this.group1.cg.selectAll('circle').attr('filter', d => d.v2 === id ? 'url(#redify)' : 'none');
+      this.group1.mg.selectAll('circle').style('display', d => d.circle === id ? 'inline' : 'none');
+    },
+
     addKV(selection, k, v){
       let node = selection.node();
       if (!node.__data__){
@@ -169,6 +174,7 @@ export default {
 
     //生成关系
     generateRelation(option, groups) {
+      let self = this;
       let direction = option.direction,
           distance = option.distance,
           radius = option.radius;
@@ -215,11 +221,35 @@ export default {
         .attr("r", radius)
         .attr("stroke", option.stroke ? option.stroke : "none")
         .attr("stroke-width", option.strokeWidth ? option.strokeWidth : "1");
-        // .call(d3.drag().on("start", dragStarted).on("drag", dragged))
-      // .on("end", dragEnded);
+
+      let tf_mark_radius = radius / 4;
+      let trueMark = groups.mg
+        .append('circle')
+        .attr('transform', `translate(${x2 - radius / 2},${y2})`)
+        .attr('fill', 'url(#true)')
+        .attr('r', tf_mark_radius)
+        .attr('stroke', 'none')
+        .style('display', 'none')
+        .on('click', function (e, d){
+          self.group1.cg.selectAll('circle').filter(d => d.v2 === option.v2).attr('filter', 'none');
+          self.group1.mg.selectAll('circle').filter(d => d.circle === option.v2).style('display', 'none');
+        });
+      let falseMark = groups.mg
+        .append('circle')
+        .attr('transform', `translate(${x2 + radius / 2},${y2})`)
+        .attr('fill', 'url(#false)')
+        .attr('r', tf_mark_radius)
+        .attr('stroke', 'none')
+        .style('display', 'none')
+        .on('click', function(e, d){
+          self.$store.commit('removeStudent', option.v2);
+          self.drawStudents();
+        });
 
       this.addKV(new_circle, "v2", option.v2);
       this.addKV(new_circle, "v1", option.v1);
+      this.addKV(trueMark, 'circle', option.v2);
+      this.addKV(falseMark, 'circle', option.v2);
       new_circle.on(option.listener.event, option.listener.callback);
     },
 
@@ -254,7 +284,8 @@ export default {
       this.group1 = {
         lg: this.vargroup.append('g'),
         tg: this.vargroup.append('g'),
-        cg: this.vargroup.append('g')
+        cg: this.vargroup.append('g'),
+        mg: this.vargroup.append('g')
       }
       if (this.$store.getters.hasStudents){
         self.generateGraph(this.$store.state.student_data, {
@@ -281,7 +312,8 @@ export default {
       this.group2 = {
         lg: this.vargroup.append('g'),
         tg: this.vargroup.append('g'),
-        cg: this.vargroup.append('g')
+        cg: this.vargroup.append('g'),
+        mg: this.vargroup.append('g')
       }
       if (this.$store.getters.hasCandidates){
         self.generateGraph(this.$store.state.candidate_data, {
@@ -384,7 +416,7 @@ export default {
           y: y,
           r: r
         };
-        this.specialZoom(this.drawGraph, relations, groups);
+        this.specialZoom(this.drawGraph, relations, groups);3
         this.circles.style("opacity", d => highlights.indexOf(d.id) < 0 ? 0.05 : 1)
         this.labels.style("opacity", d => highlights.indexOf(d.id) < 0 ? 0.05 : 1);
       }else{
@@ -428,6 +460,34 @@ export default {
 
       this.labels
         .transition(transition);
+    },
+
+    initDefs(){
+      this.defs.append("pattern")
+        .attr('id', 'true')
+        .attr("patternContentUnits", "objectBoundingBox")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .append("image")
+        .attr("xlink:href", "/static/icon/true.png")
+        .attr("width", 1)
+        .attr("height", 1);
+
+      this.defs.append("pattern")
+        .attr('id', 'false')
+        .attr("patternContentUnits", "objectBoundingBox")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .append("image")
+        .attr("xlink:href", "/static/icon/false.png")
+        .attr("width", 1)
+        .attr("height", 1);
+
+      let f = this.defs.append('filter')
+        .attr('id', 'redify');
+      f.append('feColorMatrix')
+        .attr('type', 'matrix')
+        .attr('values', '1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0')
     },
 
     //文本的显示与隐藏
@@ -566,6 +626,8 @@ export default {
       this.defs = circle_pack_group.append("defs");
       this.vargroup = circle_pack_group.append('g');
 
+      this.initDefs();
+
       //首次聚焦
       switch (this.display_theme) {
         case "0":
@@ -631,12 +693,16 @@ export default {
     this.svg = d3.select('#circle-pack-svg');
     Object.assign(this.$props, this.$route.params);
     let data_url = '/circle_pack_data';
-    axios.get(data_url)
-      .then(res => {
-        this.$store.commit('setData', res.data);
-        this.drawCirclePack(this.$store.state.circle_pack_data);
-      })
-      .catch(e => console.log(e));
+    if(this.$store.getters.dataInited){
+      this.drawCirclePack(this.$store.state.circle_pack_data);
+    }else {
+      axios.get(data_url)
+        .then(res => {
+          this.$store.commit('setData', res.data);
+          this.drawCirclePack(this.$store.state.circle_pack_data);
+        })
+        .catch(e => console.log(e));
+    }
   }
 }
 ;
