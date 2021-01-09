@@ -665,6 +665,17 @@ export default {
     }
     ,
     jumpTo(name) {
+      if (this.group2){
+        Object.values(this.group2).forEach(d => d.remove());
+        this.circles.style('opacity', 1);
+        this.labels.style('opacity', 1);
+      }
+      if (this.group1){
+        Object.values(this.group1).forEach(d => d.remove());
+        this.circles.style('opacity', 1);
+        this.labels.style('opacity', 1);
+      }
+
       let selected = this.circles.filter(d => d.data.name === name).datum();
       let path = this.getPath(selected);
       this.setFocus(path);
