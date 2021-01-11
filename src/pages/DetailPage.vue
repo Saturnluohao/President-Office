@@ -105,10 +105,10 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.params.first_focus){
-      this.currentFocus = this.$route.params.first_focus;
-      this.display_theme = "2";
-    };
+    // if (this.$route.params.first_focus){
+    //   this.currentFocus = this.$route.params.first_focus;
+    //   this.display_theme = "2";
+    // };
     let self = this;
     this.timer = setInterval(function () {
       self.getDateStr();
@@ -147,7 +147,7 @@ export default {
 #detailpage-school {
   height: 8%;
   width: 16%;
-  background-image: url("/static/school.png");
+  background-image: url("../assets/school.png");
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;

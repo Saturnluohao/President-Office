@@ -55,7 +55,7 @@
               <Divider></Divider>
               <div id="contact">
                 <div>
-                  <Avatar src="/static/ai/image_person.png" size="48"></Avatar>
+                  <Avatar src="static/ai/image_person.png" size="48"></Avatar>
                 </div>
                 <div>
                   <p>负责人</p>
@@ -145,7 +145,7 @@ export default {
     this.timer = setInterval(function () {
       self.getDateStr();
     }, 1000);
-    d3.svg("/static/school.svg").then(function (data) {
+    d3.svg("http://49.235.244.95/static/school.svg").then(function (data) {
       let svg = data.documentElement;
       svg.id = "map-container";
       document.getElementById("map").appendChild(svg);
@@ -205,7 +205,7 @@ beforeDestroy()
 
 #school {
   height: 5%;
-  background-image: url("/static/school.png");
+  background-image: url("../assets/school.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: 10%;
@@ -273,19 +273,19 @@ beforeDestroy()
 }
 
 #first_os {
-  background-image: url('/static/old_schoolmate/image_1.jpg');
+  background-image: url('../assets/old_schoolmate/image_1.jpg');
 }
 
 #second_os {
-  background-image: url('/static/old_schoolmate/image_2.jpg');
+  background-image: url('../assets/old_schoolmate/image_2.jpg');
 }
 
 #third_os {
-  background-image: url('/static/old_schoolmate/image_3.jpg');
+  background-image: url('../assets/old_schoolmate/image_3.jpg');
 }
 
 #first_ai {
-  background-image: url("/static/ai/image_1.png");
+  background-image: url("../assets/ai/image_1.png");
 }
 
 #contact {

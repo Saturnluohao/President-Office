@@ -6,7 +6,7 @@
           <span>管理</span>
         </li>
         <li v-for="(item,i) in menuItems" @click="toDecision(item)">{{item}}
-          <img src="/static/arrow.svg">
+          <img src="../assets/arrow.svg">
         </li>
         <li @click="addDecision">
           <Icon type="md-add" color="white" size="16"></Icon>
@@ -69,7 +69,8 @@ export default {
       this.$router.push({
         name: 'detail',
         params: {
-          first_focus: item.value
+          first_focus: item.value,
+          display_theme: "2"
         }
       })
     },

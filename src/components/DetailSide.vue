@@ -48,13 +48,13 @@
         <ul id="detailpage-decision-list">
           <li v-for="(item,i) in menuItems" @click="jumpTo(item)">
             {{ item }}
-            <img src="/static/arrow.svg"/>
+            <img src="../assets/arrow.svg"/>
           </li>
         </ul>
       </div>
     </div>
 
-    <InfoCard v-if="infoCard" :name="name" :collapse="whichCollapse === 1"></InfoCard>
+    <InfoCard v-if="infoCard" :name="name"></InfoCard>
   </div>
 </template>
 

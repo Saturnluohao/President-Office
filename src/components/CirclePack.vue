@@ -376,7 +376,7 @@ export default {
             .attr("width", "100%")
             .attr("height", "100%")
             .append("image")
-            .attr("xlink:href", "/static/image/student_" + relation.v2 + ".png")
+            .attr("xlink:href", "static/image/student_" + relation.v2 + ".png")
             .attr("width", 1)
             .attr("height", 1);
           relation.fill = "url(#icon" + relation.v2 + ")";
@@ -469,7 +469,7 @@ export default {
         .attr("width", "100%")
         .attr("height", "100%")
         .append("image")
-        .attr("xlink:href", "/static/icon/true.png")
+        .attr("xlink:href", "static/icon/true.png")
         .attr("width", 1)
         .attr("height", 1);
 
@@ -479,7 +479,7 @@ export default {
         .attr("width", "100%")
         .attr("height", "100%")
         .append("image")
-        .attr("xlink:href", "/static/icon/false.png")
+        .attr("xlink:href", "static/icon/false.png")
         .attr("width", 1)
         .attr("height", 1);
 
